@@ -23,7 +23,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Choose added information"
         android:id="@+id/textView"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="158dp"
         android:layout_below="@+id/login_button"
         android:layout_alignStart="@+id/login_button" />
 
@@ -32,7 +32,6 @@
         android:layout_height="wrap_content"
         android:text="Altitude"
         android:id="@+id/checkBoxAltitude"
-        android:layout_marginTop="31dp"
         android:checked="false"
         android:layout_below="@+id/textView"
         android:layout_alignStart="@+id/textView" />
@@ -44,15 +43,13 @@
         android:id="@+id/checkBoxPhoto"
         android:checked="false"
         android:layout_below="@+id/checkBoxAltitude"
-        android:layout_alignStart="@+id/checkBoxAltitude"
-        android:layout_marginTop="27dp" />
+        android:layout_alignStart="@+id/checkBoxAltitude" />
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Battery Status"
-        android:id="@+id/checkBox"
-        android:layout_marginTop="27dp"
+        android:id="@+id/checkBoxBatteryStatus"
         android:checked="false"
         android:layout_below="@+id/checkBoxPhoto"
         android:layout_alignStart="@+id/checkBoxPhoto" />
@@ -62,10 +59,9 @@
         android:layout_height="wrap_content"
         android:text="Data network"
         android:id="@+id/checkBoxDataNetwork"
-        android:layout_marginTop="35dp"
         android:checked="false"
-        android:layout_below="@+id/checkBox"
-        android:layout_alignStart="@+id/checkBox" />
+        android:layout_below="@+id/checkBoxBatteryStatus"
+        android:layout_alignStart="@+id/checkBoxBatteryStatus" />
 
     <Button
         android:layout_width="wrap_content"
@@ -75,5 +71,23 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="35dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Event ID"
+        android:id="@+id/textView7"
+        android:layout_marginTop="30dp"
+        android:layout_below="@+id/login_button"
+        android:layout_alignStart="@+id/login_button" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText3"
+        android:layout_below="@+id/textView7"
+        android:layout_alignStart="@+id/textView7"
+        android:layout_alignEnd="@+id/login_button" />
 
 </RelativeLayout>

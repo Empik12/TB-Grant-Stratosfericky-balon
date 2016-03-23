@@ -85,6 +85,7 @@
         android:layout_height="wrap_content"
         android:text="Confirm"
         android:id="@+id/button5"
+        android:onClick="SetSmsSettings"
         android:layout_below="@+id/checkBox5"
         android:layout_toEndOf="@+id/checkBox5"
         android:layout_marginTop="54dp" />

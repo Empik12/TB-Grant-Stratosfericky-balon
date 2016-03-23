@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -23,6 +24,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.internal.BoltsMeasurementEventListener;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
@@ -54,8 +56,10 @@ public class SharingSettingsActivity extends AppCompatActivity {
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                AccessToken token = AccessToken.getCurrentAccessToken();
+                System.out.println(token.toString());
 
-                AccessToken token = loginResult.getAccessToken().getCurrentAccessToken();
+                 token = loginResult.getAccessToken().getCurrentAccessToken();
                 Bundle params = new Bundle();
                 params.putString("message", "This is a test message");
 /* make the API call */
@@ -116,6 +120,44 @@ public class SharingSettingsActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    @Override
+    public  void finish() {
+        Intent intent = new Intent(this, MainActivity.class);
+        String IntervalOfSharing = "5";
+        boolean AltitudeInfoSharing = false;
+        boolean PhotoInfoSharing = false;
+        boolean BatteryStatusSharing = false;
+        boolean DataNetworkSharing = false;
+
+        CheckBox AltitudeCheck = (CheckBox) findViewById(R.id.checkBoxAltitude);
+        CheckBox PhotoCheck = (CheckBox) findViewById(R.id.checkBoxPhoto);
+        CheckBox BatteryCheck = (CheckBox) findViewById(R.id.checkBoxBatteryStatus);
+        CheckBox DataCheck = (CheckBox) findViewById(R.id.checkBoxDataNetwork);
+        intent.putExtra("IntervalOfSharing",IntervalOfSharing);
+
+        if(AltitudeCheck.isChecked()) {
+            AltitudeInfoSharing = true;
+            intent.putExtra("AltitudeInfoSharing", AltitudeInfoSharing);
+        }
+        if(PhotoCheck.isChecked()) {
+            PhotoInfoSharing = true;
+            intent.putExtra("PhotoInfoSharing", PhotoInfoSharing);
+        }
+        if(BatteryCheck.isChecked()) {
+            BatteryStatusSharing = true;
+            intent.putExtra("BatteryStatusInfoSharing", BatteryStatusSharing);
+        }
+        if(DataCheck.isChecked()) {
+            DataNetworkSharing = true;
+            intent.putExtra("DataNetworkInfoSharing", DataNetworkSharing);
+        }
+
+        startActivity(intent);
+        super.finish();
+
     }
 
     @Override

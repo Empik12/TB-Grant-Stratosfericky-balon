@@ -25,11 +25,30 @@ public class SMSsettingsActivity extends AppCompatActivity {
         }
 
     */
+
+
+    public void SetSmsSettings(){
+
+    }
+
+    @Override
+    public  void finish() {
+        Intent intent = new Intent(this, MainActivity.class);
+        String PhoneNumber = "+421918573335";
+        intent.putExtra("PhoneNumber",PhoneNumber);
+        startActivity(intent);
+        super.finish();
+
+    }
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
+            case android.R.id.home: {
+                System.out.println("Vraciam sa");
                 finish();
+            }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

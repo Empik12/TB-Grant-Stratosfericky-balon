@@ -62,6 +62,10 @@
         <service
             android:name=".Services.BatteryStatus"
             android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".Services.FacebookPUSH"
+            android:enabled="true"
             android:exported="true"></service>
     </application>
 

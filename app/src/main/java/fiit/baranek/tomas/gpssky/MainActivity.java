@@ -73,6 +73,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import fiit.baranek.tomas.gpssky.Services.BatteryStatus;
+import fiit.baranek.tomas.gpssky.Services.FacebookPUSH;
 import fiit.baranek.tomas.gpssky.Services.GPS;
 import fiit.baranek.tomas.gpssky.Services.SMS;
 import fiit.baranek.tomas.gpssky.Settings.BasicSettings;
@@ -191,8 +193,11 @@ public class MainActivity extends Activity {
     GPS gps;
     Intent serviceIntent;
     SMS sms = new SMS();
+    FacebookPUSH facebookPUSH = new FacebookPUSH();
+    BatteryStatus batteryStatus = new BatteryStatus();
     public void Start(View v) {
         gps = new GPS(MainActivity.this);
+
 
 
         if (gps.canGetLocation()) {
@@ -201,12 +206,12 @@ public class MainActivity extends Activity {
             double longitude = gps.getLongitude();
             String provider = gps.getProvider();
             double altitude = gps.getAltitude();
+            double battery = batteryStatus.getBatteryStatus();
 
-            sms.sendSMS("+421919277176","Logitude:" + String.valueOf(longitude) + "\nLatitude:" + String .valueOf(latitude) + "\nAltitude:" + String .valueOf(altitude) + "\nProvider:" + String .valueOf(provider),getApplicationContext());
+            sms.sendSMS("+421919277176", "Logitude:" + String.valueOf(longitude) + "\nLatitude:" + String.valueOf(latitude) + "\nAltitude:" + String.valueOf(altitude) + "\nProvider:" + String.valueOf(provider) + "\nBattery:" + String.valueOf(battery), getApplicationContext());
 
-            SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage("+421919277176", null, "Logitude:" + String.valueOf(longitude) + "\nLatitude:" + String .valueOf(latitude) + "\nAltitude:" + String .valueOf(altitude) + "\nProvider:" + String .valueOf(provider), null, null);
-            Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
+
+            facebookPUSH.push("Logitude:" + String.valueOf(longitude) + "\nLatitude:" + String.valueOf(latitude) + "\nAltitude:" + String.valueOf(altitude) + "\nProvider:" + String.valueOf(provider) + "\nBattery:" + String.valueOf(battery), "1019533458095339", getApplicationContext());
 
 
             //Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();

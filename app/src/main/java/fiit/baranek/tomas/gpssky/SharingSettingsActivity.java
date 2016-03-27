@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -34,24 +35,68 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+import fiit.baranek.tomas.gpssky.Settings.SharingSettings;
+
 public class SharingSettingsActivity extends AppCompatActivity {
 
     private LoginButton loginButton;
     private CallbackManager callbackManager;
+    EditText EditTextEventID;
+    CheckBox CheckBoxAltitude;
+    CheckBox CheckBoxPhoto;
+    CheckBox CheckBoxBatteryStatus;
+    CheckBox CheckBoxDataNetwork;
+    SharingSettings settings = new SharingSettings();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sharing_settings);
 
+        EditTextEventID = (EditText) findViewById(R.id.editTextEventID);
+        CheckBoxAltitude = (CheckBox) findViewById(R.id.checkBoxAltitude);
+        CheckBoxPhoto = (CheckBox) findViewById(R.id.checkBoxPhoto);
+        CheckBoxBatteryStatus = (CheckBox) findViewById(R.id.checkBoxBatteryStatus);
+        CheckBoxDataNetwork = (CheckBox) findViewById(R.id.checkBoxDataNetwork);
+        loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton.setPublishPermissions(Arrays.asList("publish_actions, publish_pages, manage_pages,user_about_me,user_posts"));
+
+
+        settings.setEventID(getIntent().getStringExtra("event_id"));
+        settings.setAltitude(getIntent().getBooleanExtra("altitude",false));
+        settings.setPhoto(getIntent().getBooleanExtra("photo",false));
+        settings.setBatteryStatus(getIntent().getBooleanExtra("battery_status",false));
+        settings.setDataNetwork(getIntent().getBooleanExtra("data_network",false));
+
+
         setTitle("Sharing settings");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         callbackManager = CallbackManager.Factory.create();
 
-        loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setPublishPermissions(Arrays.asList("publish_actions, publish_pages, manage_pages,user_about_me,user_posts"));
+        EditTextEventID.setText(settings.getEventID());
+        if(settings.getAltitude()){
+            CheckBoxAltitude.setChecked(true);
+        } else {
+            CheckBoxAltitude.setChecked(false);
+        }
+        if(settings.getPhoto()){
+            CheckBoxPhoto.setChecked(true);
+        } else {
+            CheckBoxPhoto.setChecked(false);
+        }
+        if(settings.getBatteryStatus()){
+            CheckBoxBatteryStatus.setChecked(true);
+        } else {
+            CheckBoxBatteryStatus.setChecked(false);
+        }
+        if(settings.getDataNetwork()){
+            CheckBoxDataNetwork.setChecked(true);
+        } else {
+            CheckBoxDataNetwork.setChecked(false);
+        }
+
+
 
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -103,13 +148,6 @@ public class SharingSettingsActivity extends AppCompatActivity {
 
     }
 
-/*
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
-        Intent Myintent=new Intent(this, MainActivity.class).putExtra("SharingInformationSet", true);
-        startActivity(Myintent);
-    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -122,43 +160,44 @@ public class SharingSettingsActivity extends AppCompatActivity {
         }
     }
 
+    public void Confirm(View v) {
 
-    @Override
-    public  void finish() {
-        Intent intent = new Intent(this, MainActivity.class);
-        String IntervalOfSharing = "5";
-        boolean AltitudeInfoSharing = false;
-        boolean PhotoInfoSharing = false;
-        boolean BatteryStatusSharing = false;
-        boolean DataNetworkSharing = false;
+        settings.setEventID(EditTextEventID.getText().toString());
 
-        CheckBox AltitudeCheck = (CheckBox) findViewById(R.id.checkBoxAltitude);
-        CheckBox PhotoCheck = (CheckBox) findViewById(R.id.checkBoxPhoto);
-        CheckBox BatteryCheck = (CheckBox) findViewById(R.id.checkBoxBatteryStatus);
-        CheckBox DataCheck = (CheckBox) findViewById(R.id.checkBoxDataNetwork);
-        intent.putExtra("IntervalOfSharing",IntervalOfSharing);
-
-        if(AltitudeCheck.isChecked()) {
-            AltitudeInfoSharing = true;
-            intent.putExtra("AltitudeInfoSharing", AltitudeInfoSharing);
-        }
-        if(PhotoCheck.isChecked()) {
-            PhotoInfoSharing = true;
-            intent.putExtra("PhotoInfoSharing", PhotoInfoSharing);
-        }
-        if(BatteryCheck.isChecked()) {
-            BatteryStatusSharing = true;
-            intent.putExtra("BatteryStatusInfoSharing", BatteryStatusSharing);
-        }
-        if(DataCheck.isChecked()) {
-            DataNetworkSharing = true;
-            intent.putExtra("DataNetworkInfoSharing", DataNetworkSharing);
+        if(CheckBoxAltitude.isChecked()){
+            settings.setAltitude(true);
+        } else {
+            settings.setAltitude(false);
         }
 
-        startActivity(intent);
-        super.finish();
+        if(CheckBoxPhoto.isChecked()){
+            settings.setPhoto(true);
+        } else {
+            settings.setPhoto(false);
+        }
 
+        if(CheckBoxBatteryStatus.isChecked()){
+            settings.setBatteryStatus(true);
+        } else {
+            settings.setBatteryStatus(false);
+        }
+
+        if(CheckBoxDataNetwork.isChecked()){
+            settings.setDataNetwork(true);
+        } else {
+            settings.setDataNetwork(false);
+        }
+
+        Intent intent = new Intent();
+        intent.putExtra("event_id", settings.getEventID());
+        intent.putExtra("altitude", settings.getAltitude());
+        intent.putExtra("battery_status", settings.getBatteryStatus());
+        intent.putExtra("data_network", settings.getDataNetwork());
+        intent.putExtra("photo", settings.getPhoto());
+        setResult(RESULT_OK, intent);
+        finish();
     }
+
 
     @Override
     protected void onResume() {

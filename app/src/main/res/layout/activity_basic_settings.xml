@@ -23,15 +23,17 @@
             android:text="Interval of sending"
             android:id="@+id/textView4" />
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/editText" />
-
         <android.support.v4.widget.Space
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/view" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/editTextIntervalOfSending" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -55,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Save"
-            android:id="@+id/radioButton2"
+            android:id="@+id/radioButtonSave"
             android:checked="false" />
         </RadioGroup>
 
@@ -69,17 +71,18 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/editText2" />
+            android:id="@+id/editTextSave" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Confirm"
             android:id="@+id/button6"
-            android:layout_below="@+id/checkBox5"
-            android:layout_toEndOf="@+id/checkBox5"
+            android:layout_below="@+id/checkBoxDataNetwork"
+            android:layout_toEndOf="@+id/checkBoxDataNetwork"
             android:layout_marginTop="54dp"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:onClick="Confirm"/>
 
     </LinearLayout>
 </RelativeLayout>

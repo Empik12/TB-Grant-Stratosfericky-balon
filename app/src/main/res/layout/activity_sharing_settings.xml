@@ -70,7 +70,8 @@
         android:id="@+id/buttonConfirm"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="35dp" />
+        android:layout_marginBottom="35dp"
+        android:onClick="Confirm"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -85,9 +86,9 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editText3"
+        android:id="@+id/editTextEventID"
         android:layout_below="@+id/textView7"
-        android:layout_alignStart="@+id/textView7"
-        android:layout_alignEnd="@+id/login_button" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

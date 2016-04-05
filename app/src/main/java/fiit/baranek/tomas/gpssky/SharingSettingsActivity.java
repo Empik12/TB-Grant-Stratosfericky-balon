@@ -110,7 +110,7 @@ public class SharingSettingsActivity extends AppCompatActivity {
 /* make the API call */
                 new GraphRequest(
                         AccessToken.getCurrentAccessToken(),
-                        "/795930057178952/feed",
+                        "/mee/feed",
                         params,
                         HttpMethod.POST,
                         new GraphRequest.Callback() {

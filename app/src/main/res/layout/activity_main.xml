@@ -48,54 +48,20 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/buttonEND"
-            android:layout_gravity="right"
+            android:text="START"
+            android:onClick="Start"
+            android:id="@+id/button4"
+            android:layout_gravity="center_horizontal"
             android:layout_weight="0.05" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="START"
-            android:onClick="Start"
-            android:id="@+id/buttonStart"
+            android:text="END"
+            android:id="@+id/button7"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="0.05" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Provider"
-            android:id="@+id/Provider"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.05" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Longitude"
-            android:id="@+id/Longitude"
-            android:layout_weight="0.05" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Atitude"
-            android:id="@+id/Atitude"
-            android:layout_gravity="right"
-            android:layout_weight="0.05" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Latitude"
-            android:id="@+id/Latitude"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.05" />
+            android:layout_weight="0.05"
+            android:onClick="End"/>
 
     </LinearLayout>
 </RelativeLayout>

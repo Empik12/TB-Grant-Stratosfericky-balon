@@ -34,10 +34,10 @@ public class FacebookPUSH extends Service {
 
     public void push(String message, String EventID, Context context){
         AccessToken token = AccessToken.getCurrentAccessToken();
-        String path = "/"+EventID+"/feed";
+        String path = "/me/feed";
         Bundle parametre = new Bundle();
         parametre.putString("message", message);
-        parametre.putString("description", "topic share");
+        //parametre.putString("description", "topic share");
         final String[] result = new String[1];
         //parametre.putByteArray("picture", fotecka);
 

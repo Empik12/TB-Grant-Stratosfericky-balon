@@ -43,7 +43,7 @@ public class GPS extends Service implements LocationListener {
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1;
 
 
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 1 * 1;
+    private static final long MIN_TIME_BW_UPDATES = 1;
 
 
     protected LocationManager locationManager;

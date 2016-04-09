@@ -32,6 +32,6 @@ public class SMS extends Service {
     public void sendSMS(String phoneNo, String message, Context context){
         SmsManager smsManager = SmsManager.getDefault();
         smsManager.sendTextMessage(phoneNo, null, message, null, null);
-        Toast.makeText(context, "SMS sent.", Toast.LENGTH_LONG).show();
+       // Toast.makeText(context, "SMS sent.", Toast.LENGTH_LONG).show();
     }
 }

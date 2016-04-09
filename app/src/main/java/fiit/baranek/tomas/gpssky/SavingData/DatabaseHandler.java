@@ -16,7 +16,7 @@ import java.util.List;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "flyData2";
+    private static final String DATABASE_NAME = "flyData3";
     private static final String TABLE_DATA = "data";
 
 
@@ -34,7 +34,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_LONGITUDE = "longitude";
     private static final String KEY_LATITUDE = "latitude";
     private static final String KEY_ALTITUDE = "altitude";
-    private static final String KEY_PROVIDER = "provider";
     private static final String KEY_BATTERY = "battery";
     private static final String KEY_NETWORK_CONNECTION = "network_connection";
     private static final String KEY_PHOTO_PATH = "photo_path";
@@ -52,7 +51,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_DATA + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_LATITUDE + " REAL,"
                 + KEY_LONGITUDE + " REAL," + KEY_ALTITUDE + " REAL,"
-                + KEY_PROVIDER + " TEXT," + KEY_BATTERY + " REAL,"
+                + KEY_BATTERY + " REAL,"
                 + KEY_NETWORK_CONNECTION + " TEXT," + KEY_PHOTO_PATH + " TEXT,"
                 + KEY_TIME + " TEXT" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
@@ -71,7 +70,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_LATITUDE, data.getLatitude());
         values.put(KEY_LONGITUDE, data.getLongitude());
         values.put(KEY_ALTITUDE, data.getAltitude());
-        values.put(KEY_PROVIDER, data.getProvider());
         values.put(KEY_BATTERY, data.getBattery());
         values.put(KEY_NETWORK_CONNECTION, data.getNetworkConnection());
         values.put(KEY_PHOTO_PATH, data.getPhotoPath());
@@ -79,6 +77,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.insert(TABLE_DATA, null, values);
         db.close();
     }
+
+
+
 
     public List<Data> getAllData(){
         List<Data> DataList = new ArrayList<Data>();
@@ -96,11 +97,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 data.setLatitude(Double.parseDouble(cursor.getString(1)));
                 data.setLongitude(Double.parseDouble(cursor.getString(2)));
                 data.setAltitude(Double.parseDouble(cursor.getString(3)));
-                data.setProvider(cursor.getString(4));
-                data.setBattery(Double.parseDouble(cursor.getString(5)));
-                data.setNetworkConnection(cursor.getString(6));
-                data.setPhotoPath(cursor.getString(7));
-                data.setTime(cursor.getString(8));
+                data.setBattery(Double.parseDouble(cursor.getString(4)));
+                data.setNetworkConnection(cursor.getString(5));
+                data.setPhotoPath(cursor.getString(6));
+                data.setTime(cursor.getString(7));
                 // Adding contact to list
                 DataList.add(data);
             } while (cursor.moveToNext());

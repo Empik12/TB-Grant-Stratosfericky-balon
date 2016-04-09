@@ -13,8 +13,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.TextureView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -25,9 +28,15 @@ public class GPS extends Service implements LocationListener {
     private final Context mContext;
 
 
+    public boolean isNetworkEnabled() {
+        return isNetworkEnabled;
+    }
+
+    public boolean isGPSEnabled() {
+        return isGPSEnabled;
+    }
+
     boolean isGPSEnabled = false;
-
-
     boolean isNetworkEnabled = false;
 
 
@@ -50,10 +59,35 @@ public class GPS extends Service implements LocationListener {
 
     public GPS(Context context) {
         this.mContext = context;
-        getLocation();
+        locationManager = (LocationManager) mContext
+                .getSystemService(LOCATION_SERVICE);
+
+
+        isGPSEnabled = locationManager
+                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+
+        isNetworkEnabled = locationManager
+                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        location = locationManager
+                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if(location!=null) {
+            setCurrentLongitude(location.getLongitude());
+            setCurrentLatitude(location.getLatitude());
+            setCurrentProvider(location.getProvider());
+        }
+        locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                MIN_TIME_BW_UPDATES,
+                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+
+
+        //getLocation();
     }
 
     public Location getLocation() {
+        //Provider.setText("Skúška");
         try {
             locationManager = (LocationManager) mContext
                     .getSystemService(LOCATION_SERVICE);
@@ -219,13 +253,55 @@ public class GPS extends Service implements LocationListener {
         alertDialog.show();
     }
 
+    public double getCurrentLatitude() {
+        return currentLatitude;
+    }
+
+    public void setCurrentLatitude(double currentLatitude) {
+        this.currentLatitude = currentLatitude;
+    }
+
+    public double getCurrentLongitude() {
+        return currentLongitude;
+    }
+
+    public void setCurrentLongitude(double currentLongitude) {
+        this.currentLongitude = currentLongitude;
+    }
+
+    public double getCurrentAtlitude() {
+        return currentAtlitude;
+    }
+
+    public void setCurrentAtlitude(double currentAtlitude) {
+        this.currentAtlitude = currentAtlitude;
+    }
+
+
+    private double currentLatitude = 0;
+    private double currentLongitude = 0 ;
+    private double currentAtlitude = 0;
+
+    public String getCurrentProvider() {
+        return currentProvider;
+    }
+
+    public void setCurrentProvider(String currentProvider) {
+        this.currentProvider = currentProvider;
+    }
+
+    private String currentProvider = "";
+
+
+
     @Override
     public void onLocationChanged(Location location) {
-
-        double lat = location.getLatitude();
-        double longi = location.getLongitude();
+        setCurrentAtlitude(location.getAltitude());
+        setCurrentLatitude(location.getLatitude());
+        setCurrentLongitude(location.getLongitude());
+        setCurrentProvider(location.getProvider());
         // Toast.makeText(getApplicationContext(), "My Location is \n" + lat + "\n" + longi, Toast.LENGTH_SHORT);
-        getLocation();
+        //getLocation();
 
     }
 

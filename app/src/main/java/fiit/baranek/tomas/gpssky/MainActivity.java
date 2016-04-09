@@ -1,13 +1,8 @@
 package fiit.baranek.tomas.gpssky;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -23,26 +18,17 @@ import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.media.Image;
 import android.media.ImageReader;
-import android.os.BatteryManager;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.IBinder;
-import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.telephony.SmsManager;
-import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
-import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -50,7 +36,6 @@ import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookRequestError;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -61,22 +46,17 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -92,29 +72,16 @@ import fiit.baranek.tomas.gpssky.Settings.SMSSettings;
 import fiit.baranek.tomas.gpssky.Settings.SharingSettings;
 
 public class MainActivity extends AppCompatActivity {
-    boolean AltitudeInfoSharing = false;
-    boolean PhotoInfoSharing = false;
-    boolean BatteryStatusInfoSharing = false;
-    boolean DataNetworkInfoSharing = false;
-    boolean AltitudeInfoSMS = false;
-    boolean BatteryStatusInfoSMS = false;
-    boolean DataNetworkInfoSMS = false;
-    int i = 0;
-    String BatteryStatus = "";
-    String Logitude = "";
-    String Latitude = "";
-    String Altitude = "";
-    Camera camera;
-    private int cameraId = 0;
-    private CallbackManager callbackManager;
-    String mCurrentPhotoPath;
     CameraDevice mCameraDevice;
-    Timer timer;
-    MyTask task;
     TextView ProviderText;
     TextView LogitudeText;
     TextView LatitudeText;
-    TextView AtitudeText;
+    GPS gps;
+    SMS sms = new SMS();
+    FacebookPUSH facebookPUSH = new FacebookPUSH();
+    BatteryStatus batteryStatus = new BatteryStatus();
+    MobileNetwork mobileNetwork = new MobileNetwork();
+    String message = "";
 
     private static final int REQUEST_CODE_BASIC_SETTINGS = 100;
     private static final int REQUEST_CODE_SHARING_SETTINGS = 200;
@@ -125,12 +92,12 @@ public class MainActivity extends AppCompatActivity {
 
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
 
-    static {
+    /*static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
         ORIENTATIONS.append(Surface.ROTATION_90, 0);
         ORIENTATIONS.append(Surface.ROTATION_180, 270);
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
-    }
+    }*/
 
 
     Button btnShowLocation;
@@ -142,14 +109,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         FacebookSdk.sdkInitialize(getApplicationContext());
 
-
-        db = new DatabaseHandler(this);
-        gps = new GPS(MainActivity.this);
        // LogitudeText = (TextView) findViewById(R.id.Longitude);
         //LatitudeText = (TextView) findViewById(R.id.Latitude);
         //AtitudeText = (TextView) findViewById(R.id.Atitude);
-        //ProviderText = (TextView) findViewById(R.id.Provider);
-
+        ProviderText = (TextView) findViewById(R.id.textViewProvider);
+        LogitudeText = (TextView) findViewById(R.id.textViewLongitudeEdit);
+        LatitudeText = (TextView) findViewById(R.id.textViewLatitude);
+        gps = new  GPS(MainActivity.this);
+        //openCamera();
 
 
         //serviceIntent = new Intent(this, GPS.class);
@@ -204,14 +171,121 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    GPS gps;
-    Intent serviceIntent;
-    SMS sms = new SMS();
-    FacebookPUSH facebookPUSH = new FacebookPUSH();
-    BatteryStatus batteryStatus = new BatteryStatus();
-    MobileNetwork mobileNetwork = new MobileNetwork();
-    String message = "";
+    int stop=0;
+    TimerTask task = new TimerTask() {
+
+        public void run() {
+            //openCamera();
+                Data point = new Data();
+                point.setLatitude(gps.getCurrentLatitude());
+                point.setLongitude(gps.getCurrentLongitude());
+                point.setAltitude(gps.getCurrentAtlitude());
+                point.setBattery(batteryStatus.getBatteryStatus(getApplicationContext()));
+                point.setNetworkConnection(mobileNetwork.getQualityOfInternetConection(getApplicationContext()));
+
+                message = "Longitude: " + String.valueOf(point.getLongitude()) + "\n" + "Latitude: " + String.valueOf(point.getLatitude()) + "\n";
+
+                if (smsSettings != null) {
+                    if (smsSettings.getAltitude() != null && smsSettings.getAltitude())
+                        message = message + "Altitude: " + String.valueOf(point.getAltitude()) + "\n";
+                    if (smsSettings.getBatteryStatus() != null && smsSettings.getBatteryStatus())
+                        message = message + "Battery status: " + String.valueOf(point.getBattery()) + "\n";
+                    if (smsSettings.getDataNetwork() != null && smsSettings.getDataNetwork())
+                        message = message + "Network: " + point.getNetworkConnection();
+                }
+                System.out.println(message);
+
+                String message2 = "Longitude: " + String.valueOf(point.getLongitude()) + "\n" + "Latitude: " + String.valueOf(point.getLatitude()) + "\n";
+
+                if (sharingSeting != null) {
+                    if (sharingSeting.getAltitude() != null && sharingSeting.getAltitude())
+                        message2 = message2 + "Altitude: " + String.valueOf(point.getAltitude()) + "\n";
+                    if (sharingSeting.getBatteryStatus() != null && sharingSeting.getBatteryStatus())
+                        message2 = message2 + "Battery status: " + String.valueOf(point.getBattery()) + "\n";
+                    if (sharingSeting.getDataNetwork() != null && sharingSeting.getDataNetwork())
+                        message2 = message2 + "Network: " + point.getNetworkConnection() + "\n";
+
+                }
+                System.out.println(message2);
+                takePicture(message2);
+                //sms.sendSMS("+421919277176", message, getApplicationContext());
+                db.addData(point);
+
+        }
+    };
+
     public void Start(View v) throws CameraAccessException {
+        if(basicSeting != null && basicSeting.getIntervalOfSending() > 0)
+                System.out.println("Interval of sending:" + String.valueOf(basicSeting.getIntervalOfSending()) + " Save: " + String.valueOf(basicSeting.getSave()) + " Where: " + basicSeting.getFileName());
+        else
+            System.out.println("Not set the basic settings");
+
+        int initialDelay = 1000;
+        int period = 120000;
+        openCamera();
+
+        db  = new DatabaseHandler(getApplicationContext());
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(task, initialDelay, period);
+        /*timer = new Timer();
+        task = new MyTask();
+        timer.schedule(task, 1, 5000);
+*/
+      /*  Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(10000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+        ProviderText.setText(gps.getProvider());
+        LatitudeText.setText(String.valueOf(gps.getCurrentLatitude()));
+        LogitudeText.setText(String.valueOf(gps.getCurrentLongitude()));
+        double latitude = gps.getCurrentLatitude();
+        double longitude = gps.getCurrentLongitude();
+        String provider = gps.getCurrentProvider();
+        double altitude = gps.getCurrentAtlitude();
+        double bateria = batteryStatus.getBatteryStatus(getApplicationContext());
+        String network = mobileNetwork.getQualityOfInternetConection(getApplicationContext());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+        System.out.println("Provider" + provider + "    Network: " + network);
+
+                                Data data = new Data();
+        data.setLatitude(latitude);
+        data.setLongitude(longitude);
+        data.setProvider(provider);
+        data.setAltitude(altitude);
+        data.setBattery(bateria);
+        data.setNetworkConnection(network);
+        data.setTime(timeStamp);
+        data.setPhotoPath("ahojkaj");
+
+        db.addData(data);
+
+
+        sms.sendSMS("+421918573335", "Logitude:" + String.valueOf(longitude) + "\nLatitude:" + String.valueOf(latitude) +
+                "\nAltitude:" + String.valueOf(altitude) + "\nProvider:" + String.valueOf(provider) + "\nBattery:" + bateria
+                + "\nNetwork connection: " + network, getApplicationContext());
+
+        message = "Logitude:" + String.valueOf(longitude) + "\nLatitude:" + String.valueOf(latitude) +
+                "\nAltitude:" + String.valueOf(altitude) + "\nProvider:" + String.valueOf(provider) + "\nBattery:" + bateria
+                + "\nNetwork connection: " + network;
+        facebookPUSH.push(message, "1019533458095339", getApplicationContext());
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };t.start();*/
+
+        /*gps = new GPS(MainActivity.this);
+        timer = new Timer();
+        task = new MyTask();
+        timer.schedule(task, 1, 1000);*/
         /*gps = new GPS(MainActivity.this);
 
 
@@ -260,22 +334,25 @@ public class MainActivity extends AppCompatActivity {
 
             gps.showSettingsAlert();
         }*/
-        TakeFotoCamera2();
     }
 
-    public void End(View v) {
+    public void End(View v) throws IOException {
         /*List<Data> allData = db.getAllData();
         for (Data cn : allData) {
             String log = "Id: " + String.valueOf(cn.getId()) + ", Time STAMP: " + cn.getTime() + ", Longitude: " + String.valueOf(cn.getLongitude()) + ", Latitude: " + String.valueOf(cn.getLatitude());
             System.out.println(log);
         }*/
-        exportDatabase();
+        //task.cancel();
+        //timer.cancel();
+        String outFileName = "/storage/sdcard1/" + "/Android/data/fiit.baranek.tomas.gpssky/smeti2";
+        exportDatabase(outFileName);
+
     }
 
 
-    public boolean exportDatabase() {
-        DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
 
+
+    public boolean exportDatabase(String fileName) {
         /**First of all we check if the external storage of the device is available for writing.
          * Remember that the external storage is not necessarily the sd card. Very often it is
          * the device storage.
@@ -286,7 +363,8 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             //We use the Download directory for saving our .csv file.
-            File exportDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+            //File sdIconStorageDir = new File(
+            File exportDir = new File(fileName);
             if (!exportDir.exists())
             {
                 exportDir.mkdirs();
@@ -296,7 +374,7 @@ public class MainActivity extends AppCompatActivity {
             PrintWriter printWriter = null;
             try
             {
-                file = new File(exportDir, "MyCSVFile2.csv");
+                file = new File(exportDir, "MyCSVFile3.csv");
                 file.createNewFile();
                 printWriter = new PrintWriter(new FileWriter(file));
 
@@ -314,7 +392,7 @@ public class MainActivity extends AppCompatActivity {
                 Cursor curCSV = db.getCursor();
                 //Write the name of the table and the name of the columns (comma separated values) in the .csv file.
                 //printWriter.println("FIRST TABLE OF THE DATABASE");
-                printWriter.println("TIME,LONGITUDE,LATITUDE,ALTITUDE,PROVIDER,BATTERY,NETWORK,PHOTO PATH");
+                printWriter.println("TIME,LONGITUDE,LATITUDE,ALTITUDE,BATTERY,NETWORK,PHOTO PATH");
                 /*
                 values.put(KEY_LATITUDE, data.getLatitude());
         values.put(KEY_LONGITUDE, data.getLongitude());
@@ -327,7 +405,8 @@ public class MainActivity extends AppCompatActivity {
                  */
                 List<Data> allData = db.getAllData();
                 for (Data cn : allData) {
-                    String log = String.valueOf(cn.getTime()) + "," + String.valueOf(cn.getLongitude()) + "," + String.valueOf(cn.getLatitude() + "," + String.valueOf(cn.getAltitude()) + "," + cn.getProvider() + "," + String.valueOf(cn.getBattery()) + "," + cn.getNetworkConnection() + "," + cn.getPhotoPath());
+                    String log = String.valueOf(cn.getTime()) + "," + String.valueOf(cn.getLongitude()) + "," + String.valueOf(cn.getLatitude() + "," + String.valueOf(cn.getAltitude()) + "," + String.valueOf(cn.getBattery()) + "," + cn.getNetworkConnection() + "," + cn.getPhotoPath());
+                    System.out.println(log);
                     printWriter.println(log); //write the record in the .csv file
 
                 }
@@ -381,64 +460,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-    //Take a foto with new API CAMERA2
-    private void TakeFotoCamera2() throws CameraAccessException {
-        openCamera();
-        //SystemClock.sleep(7000);
-        //takePicture();
-        System.out.println("mBtnShot clicked");
-        timer = new Timer();
-        task = new MyTask();
-        timer.schedule(task, 1, 1000);
-    }
-
-    class MyTask extends TimerTask {
-        @Override
-        public void run() {
-
-            runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    //sendAltitude();
-                    //takePicture();
-
-                    if (gps.canGetLocation()) {
-
-                        double latitude = gps.getLatitude();
-                        double longitude = gps.getLongitude();
-                        String provider = gps.getProvider();
-                        double altitude = gps.getAltitude();
-                        double bateria = batteryStatus.getBatteryStatus(getApplicationContext());
-                        String network = mobileNetwork.getQualityOfInternetConection(getApplicationContext());
-                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-
-                        System.out.println("Provider" + provider + "    Network: " + network);
-
-                        Data data = new Data();
-                        data.setLatitude(latitude);
-                        data.setLongitude(longitude);
-                        data.setProvider(provider);
-                        data.setAltitude(altitude);
-                        data.setBattery(bateria);
-                        data.setNetworkConnection(network);
-                        data.setTime(timeStamp);
-                        data.setPhotoPath("ahojkaj");
-
-                        db.addData(data);
-                    } else {
-                        gps.showSettingsAlert();
-                    }
-
-
-                }
-            });
-        }
-
-    }
-
-    protected void takePicture() {
+    protected void takePicture(final String message_share) {
         System.out.println("takePicture");
         if (null == mCameraDevice) {
             System.out.println("mCameraDevice is null, return");
@@ -476,10 +498,16 @@ public class MainActivity extends AppCompatActivity {
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
 
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String timeStamp = new SimpleDateFormat("hh_mm_ss_dd_MM_yyyy").format(new Date());
             String imageFileName = "SKUSKA_" + timeStamp;
 
-            final File file = new File(Environment.getExternalStorageDirectory() + "/DCIM", imageFileName + ".jpg");
+            String filename = "smeti2";
+            String iconsStoragePath = "/storage/sdcard1/" + "/Android/data/fiit.baranek.tomas.gpssky/"+filename;
+            File sdIconStorageDir = new File(iconsStoragePath);
+            sdIconStorageDir.mkdir();
+
+            String secStore = System.getenv("SECONDARY_STORAGE");
+            final File file = new File(sdIconStorageDir, imageFileName + ".jpg");
 
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
 
@@ -539,7 +567,8 @@ public class MainActivity extends AppCompatActivity {
                         AccessToken token = AccessToken.getCurrentAccessToken();
                         String path = "/531882530347481/photos";
                         Bundle parametre = new Bundle();
-                        parametre.putString("message", message);
+                        final String send = message_share;
+                        parametre.putString("message", send);
                         parametre.putString("description", "topic share");
                         parametre.putByteArray("picture", byteArray2);
 
@@ -662,138 +691,4 @@ public class MainActivity extends AppCompatActivity {
         }
 
     };
-
-    //metode for getBattery status
-    private void getBatteryPercentage() {
-        AccessToken token = AccessToken.getCurrentAccessToken();
-        System.out.println("Send battery Status " + BatteryStatus);
-
-        Bundle params = new Bundle();
-        i++;
-        params.putString("message", String.valueOf(i) + BatteryStatus + "Facebook ma zablokoval :D :D");
-/* make the API call */
-        new GraphRequest(
-                AccessToken.getCurrentAccessToken(),
-                "/795930057178952/feed",
-                params,
-                HttpMethod.POST,
-                new GraphRequest.Callback() {
-                    public void onCompleted(GraphResponse response) {
-
-                        FacebookRequestError error = response.getError();
-                        if (error != null) {
-                            System.out.println("CHyba:" + error.toString());
-
-                        } else {
-                            System.out.println("Alest okey");
-                        }
-                    }
-                }
-        ).executeAsync();
-    }
-
-
-    private void sendAltitude() {
-        AccessToken token = AccessToken.getCurrentAccessToken();
-        Bundle params = new Bundle();
-        params.putString("message", "Altitude: " + Altitude + " Logitude: " + Logitude + " Latitude: "+ Latitude );
-/* make the API call */
-        new GraphRequest(
-                AccessToken.getCurrentAccessToken(),
-                "/795930057178952/feed",
-                params,
-                HttpMethod.POST,
-                new GraphRequest.Callback() {
-                    public void onCompleted(GraphResponse response) {
-
-                        FacebookRequestError error = response.getError();
-                        if (error != null) {
-                            System.out.println("CHyba:" + error.toString());
-
-                        } else {
-                            System.out.println("Alest okey");
-                        }
-                    }
-                }
-        ).executeAsync();
-    }
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "SKUSKA_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        return image;
-    }
-
-    Camera.PictureCallback mCall = new Camera.PictureCallback() {
-        public void onPictureTaken(byte[] data, Camera camera) {
-            //decode the data obtained by the camera into a Bitmap
-            //display.setImageBitmap(photo);
-            Bitmap bitmapPicture
-                    = BitmapFactory.decodeByteArray(data, 0, data.length);
-
-            File destination = null;
-            try {
-                destination = createImageFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            // set file out stream
-            FileOutputStream out = null;
-            try {
-                out = new FileOutputStream(destination);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            // set compress format quality and stream
-            bitmapPicture.compress(Bitmap.CompressFormat.JPEG, 50, out);
-
-            byte[] fotecka = null;
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmapPicture.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-            fotecka = baos.toByteArray();
-
-
-
-            AccessToken token = AccessToken.getCurrentAccessToken();
-            String path = "/795930057178952/photos";
-            Bundle parametre = new Bundle();
-            parametre.putString("message", "Poletíme do stratosféry. ;-) Zatiaľ len testujem");
-            parametre.putString("description", "topic share");
-            parametre.putByteArray("picture", fotecka);
-
-
-            GraphRequest request = new GraphRequest(token, path, parametre, HttpMethod.POST, new GraphRequest.Callback() {
-
-                @Override
-                public void onCompleted(GraphResponse response) {
-                    JSONObject obj = response.getJSONObject();
-                    if (obj != null) {
-                        Toast.makeText(MainActivity.this, "id : " + obj.optString("id"), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(MainActivity.this, "errof : " + response.getError().getErrorMessage(), Toast.LENGTH_SHORT).show();
-                        System.out.println(response.getError().getErrorMessage());
-                    }
-                }
-            });
-
-            request.executeAsync();
-
-        }
-    };
-
-
-
-
-
 }

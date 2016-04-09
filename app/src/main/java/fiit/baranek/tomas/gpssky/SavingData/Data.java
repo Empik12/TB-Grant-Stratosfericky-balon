@@ -9,7 +9,6 @@ public class Data {
     private double Longitude;
     private double Latitude;
     private double Altitude;
-    private String Provider;
     private double Battery;
     private String NetworkConnection;
     private String PhotoPath;
@@ -60,14 +59,6 @@ public class Data {
         Altitude = altitude;
     }
 
-    public String getProvider() {
-        return Provider;
-    }
-
-    public void setProvider(String provider) {
-        Provider = provider;
-    }
-
     public double getBattery() {
         return Battery;
     }
@@ -92,13 +83,12 @@ public class Data {
         PhotoPath = photoPath;
     }
 
-    public Data(String time, int id, double longitude, double latitude, double altitude, String provider, double battery, String networkConnection, String photoPath) {
+    public Data(String time, int id, double longitude, double latitude, double altitude, double battery, String networkConnection, String photoPath) {
         Time = time;
         this.id = id;
         Longitude = longitude;
         Latitude = latitude;
         Altitude = altitude;
-        Provider = provider;
         Battery = battery;
         NetworkConnection = networkConnection;
         PhotoPath = photoPath;

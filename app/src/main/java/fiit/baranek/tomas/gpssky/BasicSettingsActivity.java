@@ -87,7 +87,7 @@ public class BasicSettingsActivity extends AppCompatActivity {
         setting.setFileName(EditTextSave.getText().toString());
         setting.setIntervalOfSending(Integer.parseInt(EditTextInftervalOfSending.getText().toString()));
 
-        if(setting.getIntervalOfSending() > 5 ) {
+        if(setting.getIntervalOfSending() >= 10 ) {
             if(setting.getSave() && setting.getFileName().equals("")){
                 Snackbar snackbar = Snackbar
                         .make(coordinatorLayout, "Please enter file name", Snackbar.LENGTH_LONG);

@@ -29,7 +29,7 @@
 
         <Button
             android:layout_width="245dp"
-            android:layout_height="wrap_content"
+            android:layout_height="61dp"
             android:text="Sharing settings"
             android:onClick="SharingSettings"
             android:id="@+id/button2"
@@ -38,7 +38,7 @@
 
         <Button
             android:layout_width="245dp"
-            android:layout_height="wrap_content"
+            android:layout_height="61dp"
             android:text="SMS notification settings"
             android:id="@+id/button3"
             android:onClick="SMSSettings"
@@ -47,7 +47,7 @@
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="61dp"
             android:text="START"
             android:onClick="Start"
             android:id="@+id/button4"
@@ -56,7 +56,7 @@
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="61dp"
             android:text="END"
             android:id="@+id/button7"
             android:layout_gravity="center_horizontal"
@@ -68,56 +68,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"></LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Provider"
-            android:id="@+id/textView8"
-            android:layout_weight="0.05" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:id="@+id/textViewProvider"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.05" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Longitude"
-            android:id="@+id/textViewLongitude"
-            android:layout_weight="0.05" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
-            android:id="@+id/textViewLongitudeEdit"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.05" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Latitude"
-            android:id="@+id/textView10"
-            android:layout_weight="0.05" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
-            android:id="@+id/textViewLatitude"
-            android:layout_weight="0.05"
-            android:layout_gravity="center_horizontal" />
 
     </LinearLayout>
 </RelativeLayout>

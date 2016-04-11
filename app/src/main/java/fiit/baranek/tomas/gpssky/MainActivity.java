@@ -64,6 +64,7 @@ import fiit.baranek.tomas.gpssky.SavingData.Data;
 import fiit.baranek.tomas.gpssky.SavingData.DatabaseHandler;
 import fiit.baranek.tomas.gpssky.Services.BatteryStatus;
 import fiit.baranek.tomas.gpssky.Services.FacebookPUSH;
+import fiit.baranek.tomas.gpssky.Services.Foto;
 import fiit.baranek.tomas.gpssky.Services.GPS;
 import fiit.baranek.tomas.gpssky.Services.MobileNetwork;
 import fiit.baranek.tomas.gpssky.Services.SMS;
@@ -73,14 +74,12 @@ import fiit.baranek.tomas.gpssky.Settings.SharingSettings;
 
 public class MainActivity extends AppCompatActivity {
     CameraDevice mCameraDevice;
-    TextView ProviderText;
-    TextView LogitudeText;
-    TextView LatitudeText;
     GPS gps;
     SMS sms = new SMS();
     FacebookPUSH facebookPUSH = new FacebookPUSH();
     BatteryStatus batteryStatus = new BatteryStatus();
     MobileNetwork mobileNetwork = new MobileNetwork();
+    Foto fotoService;
     String message = "";
 
     private static final int REQUEST_CODE_BASIC_SETTINGS = 100;
@@ -99,27 +98,15 @@ public class MainActivity extends AppCompatActivity {
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }*/
 
-
-    Button btnShowLocation;
-
     DatabaseHandler db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FacebookSdk.sdkInitialize(getApplicationContext());
-
-       // LogitudeText = (TextView) findViewById(R.id.Longitude);
-        //LatitudeText = (TextView) findViewById(R.id.Latitude);
-        //AtitudeText = (TextView) findViewById(R.id.Atitude);
-        ProviderText = (TextView) findViewById(R.id.textViewProvider);
-        LogitudeText = (TextView) findViewById(R.id.textViewLongitudeEdit);
-        LatitudeText = (TextView) findViewById(R.id.textViewLatitude);
-        openCamera();
+        fotoService = new Foto(getApplicationContext());
 
 
-        //serviceIntent = new Intent(this, GPS.class);
-        //this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
     }
 
     @Override
@@ -224,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     System.out.println(message2);
                     String outFileName = "/storage/sdcard1/" + "/Android/data/fiit.baranek.tomas.gpssky/" + basicSeting.getFileName();
-                    String path = takePicture(message2,outFileName, "535261456676255");
+                    String path = fotoService.takePicture(message2, outFileName, "531882530347481");
 
 
                         point.setPhotoPath(path);

@@ -71,6 +71,10 @@
         <service
             android:name=".Services.MobileNetwork"
             android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".Services.Foto"
+            android:enabled="true"
             android:exported="true"></service>
     </application>
 

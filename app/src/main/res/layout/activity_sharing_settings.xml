@@ -1,13 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayoutSharing"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="fiit.baranek.tomas.gpssky.SharingSettingsActivity">
+    tools:context=".MainActivity">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:paddingBottom="15dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp">
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
@@ -17,26 +24,41 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Choose added information"
-        android:id="@+id/textView"
-        android:layout_marginTop="158dp"
-        android:layout_below="@+id/login_button"
-        android:layout_alignStart="@+id/login_button" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Event ID"
+            android:id="@+id/textView7"
+            android:layout_marginTop="30dp"
+            android:layout_below="@+id/login_button"
+            android:layout_alignStart="@+id/login_button" />
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Altitude"
-        android:id="@+id/checkBoxAltitude"
-        android:checked="false"
-        android:layout_below="@+id/textView"
-        android:layout_alignStart="@+id/textView" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/editTextEventId"
+            android:text="531882530347481" />
 
-    <CheckBox
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Choose added information"
+            android:id="@+id/textView8" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Altitude"
+            android:id="@+id/checkBoxAltitude"
+            android:checked="false"
+            android:layout_below="@+id/textView"
+            android:layout_alignStart="@+id/textView" />
+
+        <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Photo"
@@ -45,7 +67,7 @@
         android:layout_below="@+id/checkBoxAltitude"
         android:layout_alignStart="@+id/checkBoxAltitude" />
 
-    <CheckBox
+        <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Battery Status"
@@ -54,7 +76,7 @@
         android:layout_below="@+id/checkBoxPhoto"
         android:layout_alignStart="@+id/checkBoxPhoto" />
 
-    <CheckBox
+        <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Data network"
@@ -63,7 +85,7 @@
         android:layout_below="@+id/checkBoxBatteryStatus"
         android:layout_alignStart="@+id/checkBoxBatteryStatus" />
 
-    <Button
+        <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Confirm"
@@ -71,24 +93,9 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="35dp"
-        android:onClick="Confirm"/>
+        android:onClick="Confirm"
+        android:layout_gravity="center_horizontal" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Event ID"
-        android:id="@+id/textView7"
-        android:layout_marginTop="30dp"
-        android:layout_below="@+id/login_button"
-        android:layout_alignStart="@+id/login_button" />
+    </LinearLayout>
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editTextEventID"
-        android:layout_below="@+id/textView7"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
-
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

@@ -16,7 +16,6 @@ import java.util.List;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "flyData3";
     private static final String TABLE_DATA = "data";
 
 
@@ -41,16 +40,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
 
-    public DatabaseHandler(Context context){
-        super(context,DATABASE_NAME,null,DATABASE_VERSION);
+    public DatabaseHandler(Context context,String DatabaseName){
+        super(context,DatabaseName,null,DATABASE_VERSION);
     }
 
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_DATA + "("
-                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_LATITUDE + " REAL,"
-                + KEY_LONGITUDE + " REAL," + KEY_ALTITUDE + " REAL,"
+                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_LATITUDE + " TEXT,"
+                + KEY_LONGITUDE + " TEXT," + KEY_ALTITUDE + " TEXT,"
                 + KEY_BATTERY + " REAL,"
                 + KEY_NETWORK_CONNECTION + " TEXT," + KEY_PHOTO_PATH + " TEXT,"
                 + KEY_TIME + " TEXT" + ")";
@@ -67,9 +66,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_LATITUDE, data.getLatitude());
-        values.put(KEY_LONGITUDE, data.getLongitude());
-        values.put(KEY_ALTITUDE, data.getAltitude());
+        values.put(KEY_LATITUDE, String.valueOf(data.getLatitude()));
+        values.put(KEY_LONGITUDE, String.valueOf(data.getLongitude()));
+        System.out.println("Toto tam ide: " + String.valueOf(data.getLongitude()));
+        values.put(KEY_ALTITUDE, String.valueOf(data.getAltitude()));
         values.put(KEY_BATTERY, data.getBattery());
         values.put(KEY_NETWORK_CONNECTION, data.getNetworkConnection());
         values.put(KEY_PHOTO_PATH, data.getPhotoPath());
@@ -96,6 +96,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 data.setId(Integer.parseInt(cursor.getString(0)));
                 data.setLatitude(Double.parseDouble(cursor.getString(1)));
                 data.setLongitude(Double.parseDouble(cursor.getString(2)));
+                System.out.println("Tutotka longitude:" + cursor.getString(2));
                 data.setAltitude(Double.parseDouble(cursor.getString(3)));
                 data.setBattery(Double.parseDouble(cursor.getString(4)));
                 data.setNetworkConnection(cursor.getString(5));

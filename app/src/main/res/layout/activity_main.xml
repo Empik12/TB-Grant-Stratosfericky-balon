@@ -1,49 +1,45 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayoutMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="fiit.baranek.tomas.gpssky.MainActivity">
+    tools:context=".MainActivity">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="1"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true">
-
+        android:layout_alignParentStart="true"
+        android:paddingBottom="15dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp">
         <Button
 
             android:layout_width="245dp"
-            android:layout_height="61dp"
+            android:layout_height="60dp"
             android:text="Basic settings"
             android:onClick="BasicSettings"
             android:id="@+id/button"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.05" />
+            android:layout_gravity="center_horizontal" />
 
         <Button
             android:layout_width="245dp"
-            android:layout_height="61dp"
+            android:layout_height="60dp"
             android:text="Sharing settings"
             android:onClick="SharingSettings"
             android:id="@+id/button2"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.05" />
+            android:layout_gravity="center_horizontal" />
 
         <Button
             android:layout_width="245dp"
-            android:layout_height="61dp"
+            android:layout_height="60dp"
             android:text="SMS notification settings"
             android:id="@+id/button3"
             android:onClick="SMSSettings"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.05" />
+            android:layout_gravity="center_horizontal" />
 
         <Button
             android:layout_width="wrap_content"
@@ -52,7 +48,7 @@
             android:onClick="Start"
             android:id="@+id/button4"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="0.05" />
+            android:layout_weight="0.01" />
 
         <Button
             android:layout_width="wrap_content"
@@ -60,14 +56,28 @@
             android:text="END"
             android:id="@+id/button7"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="0.05"
+            android:layout_weight="0.01"
             android:onClick="End"/>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal" />
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="25dp"
             android:layout_gravity="center_horizontal"></LinearLayout>
 
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Flight mode"
+            android:id="@+id/switchFly"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.05"
+            android:checked="false" />
+
     </LinearLayout>
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

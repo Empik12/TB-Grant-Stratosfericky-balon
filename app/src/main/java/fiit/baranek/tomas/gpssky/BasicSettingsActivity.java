@@ -17,6 +17,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
+
 import fiit.baranek.tomas.gpssky.Settings.BasicSettings;
 
 public class BasicSettingsActivity extends AppCompatActivity {
@@ -97,12 +100,41 @@ public class BasicSettingsActivity extends AppCompatActivity {
 
                 snackbar.show();
             }else {
-                Intent intent = new Intent();
-                intent.putExtra("file_name", setting.getFileName());
-                intent.putExtra("interval_of_sending", setting.getIntervalOfSending());
-                intent.putExtra("save", setting.getSave());
-                setResult(RESULT_OK, intent);
-                finish();
+                final File DirectoryForData = new File(getApplicationContext().getExternalFilesDirs(null)[1], setting.getFileName());
+                if(DirectoryForData.exists() && setting.getSave()) {
+                    new android.app.AlertDialog.Builder(this)
+                            .setTitle("Warning")
+                            .setMessage("This file already exists. Do you want to save to this file?")
+                            .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent();
+                                    intent.putExtra("file_name", setting.getFileName());
+                                    intent.putExtra("interval_of_sending", setting.getIntervalOfSending());
+                                    intent.putExtra("save", setting.getSave());
+                                    setResult(RESULT_OK, intent);
+                                    finish();
+                                }
+                            })
+                            .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
+                else {
+                    DirectoryForData.mkdirs();
+                    Intent intent = new Intent();
+                    if(setting.getSave())
+                        intent.putExtra("file_name", setting.getFileName());
+                    else
+                        intent.putExtra("file_name", "");
+                    intent.putExtra("interval_of_sending", setting.getIntervalOfSending());
+                    intent.putExtra("save", setting.getSave());
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
             }
         } else {
             Snackbar snackbar = Snackbar

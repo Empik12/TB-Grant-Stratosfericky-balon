@@ -27,14 +27,17 @@ public class FacebookPUSH extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // Let it continue running until it is stopped.
-        Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
         return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     public void push(String message, String EventID, Context context){
         AccessToken token = AccessToken.getCurrentAccessToken();
-        String path = "/me/feed";
+        String path = "/"+ EventID +"/" + "feed";
         Bundle parametre = new Bundle();
         parametre.putString("message", message);
         //parametre.putString("description", "topic share");
@@ -59,6 +62,6 @@ public class FacebookPUSH extends Service {
 
 
         request.executeAsync();
-        Toast.makeText(context,result[0], Toast.LENGTH_LONG).show();
+        //Toast.makeText(context,result[0], Toast.LENGTH_LONG).show();
     }
 }

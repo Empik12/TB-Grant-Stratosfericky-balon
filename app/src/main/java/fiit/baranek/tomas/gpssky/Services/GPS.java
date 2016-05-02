@@ -32,6 +32,7 @@ public class GPS extends Service implements LocationListener {
     double latitude;
     double longitude;
     double altitude;
+    double speed;
 
 
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1;
@@ -73,6 +74,7 @@ public class GPS extends Service implements LocationListener {
                     latitude = currentLocation.getLatitude();
                     longitude = currentLocation.getLongitude();
                     altitude = currentLocation.getAltitude();
+                    speed = currentLocation.getSpeed();
                 }
             }
 
@@ -128,6 +130,14 @@ public class GPS extends Service implements LocationListener {
         return altitude;
     }
 
+    public double getCurrentSpeed(){
+        if(currentLocation != null){
+            speed = currentLocation.getSpeed();
+        }
+
+        return speed;
+    }
+
     public boolean getCurrentLocation(){
         if(currentLocation != null){
             return true;
@@ -171,6 +181,7 @@ public class GPS extends Service implements LocationListener {
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         altitude = location.getAltitude();
+        speed = location.getSpeed();
         currentLocation = location;
 
     }

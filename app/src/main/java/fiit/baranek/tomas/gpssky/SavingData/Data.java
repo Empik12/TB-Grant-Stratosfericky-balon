@@ -9,6 +9,7 @@ public class Data {
     private double Longitude;
     private double Latitude;
     private double Altitude;
+    private double Speed;
     private double Battery;
     private String NetworkConnection;
     private String PhotoPath;
@@ -31,6 +32,13 @@ public class Data {
         return id;
     }
 
+    public double getSpeed() {
+        return Speed;
+    }
+
+    public void setSpeed(double speed) {
+        Speed = speed;
+    }
     public void setId(int id) {
         this.id = id;
     }

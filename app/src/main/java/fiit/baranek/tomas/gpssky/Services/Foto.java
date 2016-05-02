@@ -68,6 +68,7 @@ public class Foto extends Service {
     CameraDevice mCameraDevice;
     String iconsStoragePath = "";
     private final Context mContext;
+    private Boolean Received = false;
 
     public Foto(Context context) {
         this.mContext = context;
@@ -89,7 +90,8 @@ public class Foto extends Service {
         super.onDestroy();
     }
 
-    public String takePicture(final String message_share, String where, final String ivent, final double latitude, final double longitude, final double altitude,int BestPhotoWidth, int BestPhotoHeight, final int facebookPhotoWidth, final int facebookPhotoHeight) {
+    public String takePicture(final int TimeoutOfFacebookSharing, final String SMStextForFacebookTimeout, final String message_share, String where, final String ivent, final double latitude, final double longitude, final double altitude,int BestPhotoWidth, int BestPhotoHeight, final int facebookPhotoWidth, final int facebookPhotoHeight) {
+        Received = false;
         System.out.println("takePicture");
         if (null == mCameraDevice) {
             System.out.println("mCameraDevice is null, return");
@@ -209,14 +211,24 @@ public class Foto extends Service {
                             public void onCompleted(GraphResponse response) {
                                 JSONObject obj = response.getJSONObject();
                                 if (obj != null) {
+                                    Received = true;
+                                    SMS sendSMS = new SMS();
+                                    sendSMS.sendSMS("+421919277176", "Nenstala chyb" +  obj.optString("id"), mContext.getApplicationContext());
                                     System.out.println("id : " + obj.optString("id"));
                                 } else {
+                                    Received = true;
                                     System.out.println("Zle je : " +response.getError().getErrorMessage());
+                                    SMS sendSMS = new SMS();
+                                    sendSMS.sendSMS("+421919277176", SMStextForFacebookTimeout + String.valueOf(longitude) + ", " + String.valueOf(latitude) + "," + String.valueOf(altitude), mContext.getApplicationContext());
+
                                 }
                             }
                         });
-
-                        request2.executeAsync();
+                        GraphRequestBatch requestBatch = new GraphRequestBatch(request2);
+                        System.out.println("Facebook timeout: " + requestBatch.getTimeout());
+                        requestBatch.setTimeout(TimeoutOfFacebookSharing);
+                        requestBatch.executeAsync();
+                        //request2.executeAsync();
                         //request2.
                     } finally {
                         if (null != output) {
@@ -494,4 +506,7 @@ public class Foto extends Service {
 
     };
 
+    public Boolean LastFotoStatus(){
+        return Received;
+    }
 }

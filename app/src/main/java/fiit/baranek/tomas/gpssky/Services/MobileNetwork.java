@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
+import android.telephony.CellInfoGsm;
+import android.telephony.CellSignalStrengthGsm;
 import android.telephony.TelephonyManager;
 
 public class MobileNetwork extends Service {
@@ -67,8 +69,10 @@ public class MobileNetwork extends Service {
                 return "Netork info is not available";
             }
         }*/
-        if(networkInfo != null)
+        if(networkInfo != null) {
+
             return networkInfo.getSubtypeName();
+        }
         else return "";
 
         }

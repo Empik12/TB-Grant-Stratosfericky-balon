@@ -7,8 +7,8 @@ import android.os.IBinder;
 import android.telephony.SmsManager;
 import android.widget.Toast;
 
-public class SMS extends Service {
-    public SMS() {
+public class SMSService extends Service {
+    public SMSService() {
     }
 
     @Override
@@ -34,6 +34,6 @@ public class SMS extends Service {
         //smsManager.
         //smsManager.se
         smsManager.sendTextMessage(phoneNo, null, message, null, null);
-       // Toast.makeText(context, "SMS sent.", Toast.LENGTH_LONG).show();
+       // Toast.makeText(context, "SMSService sent.", Toast.LENGTH_LONG).show();
     }
 }

@@ -15,14 +15,12 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
-import android.widget.Toast;
 
 
 /**
  * Created by Tomáš Baránek
  */
-public class GPS extends Service implements LocationListener {
+public class GPSService extends Service implements LocationListener {
     private final Context mContext;
 
 
@@ -43,7 +41,7 @@ public class GPS extends Service implements LocationListener {
 
     protected LocationManager locationManager;
 
-    public GPS(Context context) {
+    public GPSService(Context context) {
         this.mContext = context;
 
         locationManager = (LocationManager) mContext
@@ -53,16 +51,10 @@ public class GPS extends Service implements LocationListener {
                 .isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (isGPSEnabled) {
-            /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
+
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
-            }*/
+            }
             locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
                     MIN_TIME_BW_UPDATES,
@@ -83,21 +75,21 @@ public class GPS extends Service implements LocationListener {
 
 
 
+    public Boolean isGPSenable(){
+        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+            return true;
+        else return false;
+    }
+
+
     public void stopUsingGPS() {
         if (locationManager != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    public void requestPermissions(@NonNull String[] permissions, int requestCode)
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for Activity#requestPermissions for more details.
                     return;
                 }
             }
-            locationManager.removeUpdates(GPS.this);
+            locationManager.removeUpdates(GPSService.this);
         }
     }
 
@@ -146,33 +138,8 @@ public class GPS extends Service implements LocationListener {
             return false;
     }
 
-
-    public void showSettingsAlert() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-
-
-        alertDialog.setTitle("Warning");
-
-
-        alertDialog.setMessage("Please enabled GPS from settings");
-
-
-        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                mContext.startActivity(intent);
-            }
-        });
-
-
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-
-        alertDialog.show();
+    public Location getLocation(){
+        return currentLocation;
     }
 
     @Override

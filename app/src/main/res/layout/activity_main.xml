@@ -4,7 +4,9 @@
     android:id="@+id/coordinatorLayoutMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:configChanges="orientation"
+    android:screenOrientation="portrait"
+    tools:context=".Activities.MainActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -16,59 +18,98 @@
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:paddingTop="15dp">
-        <Button
 
-            android:layout_width="245dp"
-            android:layout_height="60dp"
-            android:text="Basic settings"
-            android:onClick="BasicSettings"
-            android:id="@+id/button"
-            android:layout_gravity="center_horizontal" />
-
-        <Button
-            android:layout_width="245dp"
-            android:layout_height="60dp"
-            android:text="Sharing settings"
-            android:onClick="SharingSettings"
-            android:id="@+id/button2"
-            android:layout_gravity="center_horizontal" />
-
-        <Button
-            android:layout_width="245dp"
-            android:layout_height="60dp"
-            android:text="SMS notification settings"
-            android:id="@+id/button3"
-            android:onClick="SMSSettings"
-            android:layout_gravity="center_horizontal" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="61dp"
-            android:text="START"
-            android:onClick="Start"
-            android:id="@+id/button4"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.01" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="61dp"
-            android:text="END"
-            android:id="@+id/button7"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.01"
-            android:onClick="End"/>
 
         <Space
             android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="center_horizontal" />
+
+        <Button
+
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Basic settings"
+            android:onClick="BasicSettings"
+            android:id="@+id/button"
+            android:textColor="#fff"
+            android:background="@drawable/button_background"
+            android:layout_gravity="center_horizontal" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:layout_gravity="center_horizontal" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sharing settings"
+            android:onClick="SharingSettings"
+            android:id="@+id/button2"
+            android:textColor="#fff"
+            android:background="@drawable/button_background"
+            android:layout_gravity="center_horizontal" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:layout_gravity="center_horizontal" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SMS notification settings"
+            android:id="@+id/button3"
+            android:background="@drawable/button_background"
+            android:onClick="SMSSettings"
+            android:textColor="#fff"
+            android:layout_gravity="center_horizontal" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:layout_gravity="center_horizontal" />
+
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
             android:layout_gravity="center_horizontal" />
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="25dp"
-            android:layout_gravity="center_horizontal"></LinearLayout>
+            android:layout_gravity="center_horizontal">
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="START"
+            android:textColor="#1B5E20"
+            android:id="@+id/textView9"
+            android:layout_gravity="center_horizontal"
+            android:textSize="40dp"
+            android:onClick="Start"/>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="END"
+            android:textColor="#B71C1C"
+            android:id="@+id/textView10"
+            android:layout_gravity="center_horizontal"
+            android:textSize="40dp"
+            android:onClick="End"/>
 
         <Switch
             android:layout_width="wrap_content"

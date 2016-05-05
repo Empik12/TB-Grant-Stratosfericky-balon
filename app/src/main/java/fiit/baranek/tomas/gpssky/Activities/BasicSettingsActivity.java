@@ -1,4 +1,4 @@
-package fiit.baranek.tomas.gpssky;
+package fiit.baranek.tomas.gpssky.Activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,6 +20,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 
+import fiit.baranek.tomas.gpssky.R;
 import fiit.baranek.tomas.gpssky.Settings.BasicSettings;
 
 public class BasicSettingsActivity extends AppCompatActivity {
@@ -90,7 +91,7 @@ public class BasicSettingsActivity extends AppCompatActivity {
         setting.setFileName(EditTextSave.getText().toString());
         setting.setIntervalOfSending(Integer.parseInt(EditTextInftervalOfSending.getText().toString()));
 
-        if(setting.getIntervalOfSending() >= 10 ) {
+        if(setting.getIntervalOfSending() >= 120 ) {
             if(setting.getSave() && setting.getFileName().equals("")){
                 Snackbar snackbar = Snackbar
                         .make(coordinatorLayout, "Please enter file name", Snackbar.LENGTH_LONG);

@@ -1,4 +1,4 @@
-package fiit.baranek.tomas.gpssky;
+package fiit.baranek.tomas.gpssky.Activities;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import fiit.baranek.tomas.gpssky.R;
 import fiit.baranek.tomas.gpssky.Settings.SMSSettings;
 
 public class SMSsettingsActivity extends AppCompatActivity {
@@ -28,7 +29,7 @@ public class SMSsettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smssettings);
 
-        setTitle("SMS notification settings");
+        setTitle("SMSService notification settings");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         EditTextPhoneNumer = (EditText) findViewById(R.id.editTextPhone);

@@ -4,7 +4,7 @@
     android:id="@+id/coordinatorLayoutSharing"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".Activities.MainActivity">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -22,6 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_alignParentTop="true"
+        android:configChanges="orientation"
+        android:screenOrientation="portrait"
         android:layout_centerHorizontal="true" />
 
         <TextView
@@ -40,7 +42,7 @@
             android:inputType="number"
             android:ems="10"
             android:id="@+id/editTextEventId"
-            android:text="531882530347481" />
+            android:text="1611650125823319" />
 
         <TextView
             android:layout_width="wrap_content"

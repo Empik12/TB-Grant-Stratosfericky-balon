@@ -1,4 +1,4 @@
-package fiit.baranek.tomas.gpssky;
+package fiit.baranek.tomas.gpssky.Activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +25,7 @@ import com.facebook.login.widget.LoginButton;
 
 import java.util.Arrays;
 
+import fiit.baranek.tomas.gpssky.R;
 import fiit.baranek.tomas.gpssky.Settings.SharingSettings;
 
 public class SharingSettingsActivity extends AppCompatActivity {

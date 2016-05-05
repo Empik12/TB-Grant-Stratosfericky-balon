@@ -10,8 +10,8 @@ import android.telephony.CellInfoGsm;
 import android.telephony.CellSignalStrengthGsm;
 import android.telephony.TelephonyManager;
 
-public class MobileNetwork extends Service {
-    public MobileNetwork() {
+public class MobileNetworkService extends Service {
+    public MobileNetworkService() {
     }
 
     @Override

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -14,10 +13,8 @@ import com.facebook.HttpMethod;
 
 import org.json.JSONObject;
 
-import fiit.baranek.tomas.gpssky.MainActivity;
-
-public class FacebookPUSH extends Service {
-    public FacebookPUSH() {
+public class FacebookPUSHService extends Service {
+    public FacebookPUSHService() {
     }
 
     @Override
@@ -35,11 +32,14 @@ public class FacebookPUSH extends Service {
         super.onDestroy();
     }
 
-    public void push(String message, String EventID, Context context){
+    public void push(Boolean Mapshare, String GoogleMapsURL,String message, String EventID, Context context){
+
         AccessToken token = AccessToken.getCurrentAccessToken();
         String path = "/"+ EventID +"/" + "feed";
         Bundle parametre = new Bundle();
         parametre.putString("message", message);
+        if(Mapshare)
+            parametre.putString("link",GoogleMapsURL);
         //parametre.putString("description", "topic share");
         final String[] result = new String[1];
         //parametre.putByteArray("picture", fotecka);

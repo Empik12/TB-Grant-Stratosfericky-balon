@@ -12,7 +12,7 @@ import android.os.IBinder;
  * This is Service for vorking with Battery status
  *
  */
-    public class BatteryStatus extends Service {
+    public class BatteryStatusService extends Service {
 
         @Override
         public IBinder onBind(Intent intent) {

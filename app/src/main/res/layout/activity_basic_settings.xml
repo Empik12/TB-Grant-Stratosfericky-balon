@@ -4,7 +4,9 @@
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:configChanges="orientation"
+    android:screenOrientation="portrait"
+    tools:context=".Activities.MainActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -34,7 +36,8 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:ems="10"
-            android:id="@+id/editTextIntervalOfSending" />
+            android:id="@+id/editTextIntervalOfSending"
+            android:text="120" />
 
         <TextView
             android:layout_width="wrap_content"

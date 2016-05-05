@@ -1,4 +1,4 @@
-package fiit.baranek.tomas.gpssky.SavingData;
+package fiit.baranek.tomas.gpssky.Models;
 
 /**
  * Created by TomasPC on 30.3.2016.

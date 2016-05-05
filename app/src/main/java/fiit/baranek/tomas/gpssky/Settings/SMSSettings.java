@@ -6,10 +6,10 @@ package fiit.baranek.tomas.gpssky.Settings;
 public class SMSSettings {
 
 
-    private String PhoneNumber;
-    private Boolean Altitude;
-    private Boolean BatteryStatus;
-    private Boolean DataNetwork;
+    private String PhoneNumber = "";
+    private Boolean Altitude = false;
+    private Boolean BatteryStatus = false;
+    private Boolean DataNetwork = false;
 
     public SMSSettings() {
     }

@@ -4,7 +4,9 @@
     android:id="@+id/coordinatorLayoutSMS"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:configChanges="orientation"
+    android:screenOrientation="portrait"
+    tools:context=".Activities.MainActivity">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -30,7 +32,8 @@
             android:layout_height="wrap_content"
             android:inputType="phone"
             android:ems="10"
-            android:id="@+id/editTextPhone" />
+            android:id="@+id/editTextPhone"
+            android:text="0919277176" />
 
         <TextView
         android:layout_width="wrap_content"

@@ -80,6 +80,8 @@
         android:onClick="Confirm"
         android:layout_below="@+id/checkBoxDataNetwork"
         android:layout_toEndOf="@+id/checkBoxDataNetwork"
+        android:textColor="#fff"
+        android:background="@drawable/button_background"
         android:layout_marginTop="54dp"
         android:layout_gravity="center_horizontal" />
 

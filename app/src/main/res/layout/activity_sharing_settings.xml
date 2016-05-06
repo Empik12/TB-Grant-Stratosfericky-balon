@@ -93,7 +93,7 @@
         android:text="Confirm"
         android:id="@+id/buttonConfirm"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        android:layout_centerHorizontal="true" android:textColor="#fff" android:background="@drawable/button_background"
         android:layout_marginBottom="35dp"
         android:onClick="Confirm"
         android:layout_gravity="center_horizontal" />

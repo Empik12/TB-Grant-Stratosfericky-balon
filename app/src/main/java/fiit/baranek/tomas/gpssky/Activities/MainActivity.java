@@ -56,6 +56,10 @@ import fiit.baranek.tomas.gpssky.Settings.BasicSettings;
 import fiit.baranek.tomas.gpssky.Settings.SMSSettings;
 import fiit.baranek.tomas.gpssky.Settings.SharingSettings;
 
+/**
+ * Activity for basic settings
+ * In this Activity user set basic information for start
+ */
 public class MainActivity extends AppCompatActivity {
     GPSService gpsService;
     SMSService smsService = new SMSService();
@@ -88,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
     private Boolean externalMemory = false;
     Boolean LostMobileInternet = false;
     private double actualSpeed = 0;
+    private double actualAltitude = 0;
     private String PhoneNumber;
     private String InitialSMStext;
     private double StartSpeed;
@@ -104,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
     private int maxAltitudeTolerance;
     Boolean Working = false;
     private int DistanceForSendMaps = 0;
+    private int AltitudeForStar = 0;
+    private String UserName = "";
 
 
 
@@ -121,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         gpsService = new GPSService(getApplicationContext());
         if(gpsService.isGPSenable()){
         File[] externalDirectories = getApplicationContext().getExternalFilesDirs(null);
+        //check SD card
         if(externalDirectories[1] != null) {
 
             if (getApplicationContext().getExternalFilesDirs(null) != null)
@@ -196,6 +204,9 @@ public class MainActivity extends AppCompatActivity {
                     prop.setProperty("Interval_of_Facebook_sharing", "90000");
                     prop.setProperty("Interval_of_data_store", "500");
                     prop.setProperty("Interval_of_take_foto", "5000");
+                    prop.setProperty("Altitude_for_start","1500");
+                    prop.setProperty("User_name", "Mobil");
+                    prop.setProperty("Distance_for_send_maps","100");
 
                     ConfigFileOK = true;
                     //store the properties detail into a XML file
@@ -218,7 +229,6 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     //load a properties file
                     prop.loadFromXML(new FileInputStream(configFile));
-                    //get the property value and print it out
                     try {
                         BestPhotoHeight = Integer.parseInt(prop.getProperty("BEST_photo_height"));
                         BestPhotoWidth = Integer.parseInt(prop.getProperty("BEST_photo_width"));
@@ -244,12 +254,14 @@ public class MainActivity extends AppCompatActivity {
                         PhoneNumber = prop.getProperty("Phone_number");
                         InitialSMStext = prop.getProperty("Initial_SMS_text");
                         StartSpeed = Double.parseDouble(prop.getProperty("Start_speed"));
-                        System.out.println("Štartovacia rýchlosť je: " + StartSpeed);
                         maxAltitudeTolerance = Integer.parseInt(prop.getProperty("Max_altitude_tolerance"));
                         IntervalOfSendingSMS = Integer.parseInt(prop.getProperty("Interval_of_sending_SMS"));
                         IntervalOfFacebookSharing = Integer.parseInt(prop.getProperty("Interval_of_Facebook_sharing"));
                         IntervalOfDataStore = Integer.parseInt(prop.getProperty("Interval_of_data_store"));
                         IntervalOfTakeFoto = Integer.parseInt(prop.getProperty("Interval_of_take_foto"));
+                        AltitudeForStar = Integer.parseInt(prop.getProperty("Altitude_for_start"));
+                        UserName = prop.getProperty("User_name");
+                        DistanceForSendMaps = Integer.parseInt(prop.getProperty("Distance_for_send_maps"));
                         ConfigFileOK = true;
                     } catch (NumberFormatException e) {
                         ConfigFileOK = false;
@@ -282,8 +294,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         GPSService checkGPS = new GPSService(getApplicationContext());
         if(checkGPS.isGPSenable()) {
-            System.out.println("Resumnul som");
-            // Logs 'install' and 'app activate' App Events.
             AppEventsLogger.activateApp(this);
         }else{
             showGPSDisabledAlertToUser();
@@ -293,11 +303,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
-        // Logs 'app deactivate' App Event.
         AppEventsLogger.deactivateApp(this);
     }
 
+
+    //for load settings from other activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode==REQUEST_CODE_BASIC_SETTINGS){
@@ -353,6 +363,8 @@ public class MainActivity extends AppCompatActivity {
     Boolean ConfigFileOK = false;
     Location lastLocation = null;
 
+
+    //Start Aplication
     public void Start(View v) throws CameraAccessException {
         if (ConfigFileOK){
             if (!Working) {
@@ -400,8 +412,6 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                         SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy_HHMMSS");
                                         String currentDateandTime = sdf.format(new Date());
-                                        //https://www.google.sk/maps/place//@49.1798864,17.5965172
-
                                         String log = currentDateandTime + "," + String.valueOf(gpsService.getCurrentLongitude()) + "," + String.valueOf(gpsService.getCurrentLatitude()) + "," + String.valueOf(batteryStatusService.getBatteryStatus(getApplicationContext())) + "," + String.valueOf(mobileNetworkService.getQualityOfInternetConection(getApplicationContext()));
                                         Writer output;
                                         try {
@@ -442,8 +452,6 @@ public class MainActivity extends AppCompatActivity {
                                 point.setAltitude(gpsService.getCurrentAltitude());
                                 point.setBattery(batteryStatusService.getBatteryStatus(getApplicationContext()));
                                 point.setNetworkConnection(mobileNetworkService.getQualityOfInternetConection(getApplicationContext()));
-
-                                System.out.println(GPSexif.getFormattedLocationInDegree(gpsService.getCurrentLatitude(), gpsService.getCurrentLongitude()));
                                 if (basicSeting.getSave()) {
                                     if (isOnline()) {
                                         String message2 = "Longitude:" + String.valueOf(point.getLongitude()) + "\n" + "Latitude: " + String.valueOf(point.getLatitude()) + "\n";
@@ -529,14 +537,15 @@ public class MainActivity extends AppCompatActivity {
 
                         facebookFotoTask = new TimerTask() {
                             public void run() {
-                                if (lastLocation != null)
-                                    System.out.println("VzdialenosŤ:" + lastLocation.distanceTo(gpsService.getLocation()));
-                                if (lastLocation != null && lastLocation.distanceTo(gpsService.getLocation()) > 100) {
+                                if (lastLocation != null && lastLocation.distanceTo(gpsService.getLocation()) > DistanceForSendMaps) {
                                     String GoogleMapsURL = "https://www.google.sk/maps/place/" + GPSexif.getFormattedLocationInDegree(gpsService.getCurrentLatitude(), gpsService.getCurrentLongitude());
                                     FacebookPUSHService facebookPUSHService = new FacebookPUSHService();
                                     facebookPUSHService.push(true, GoogleMapsURL, "Actual position on the map.", sharingSeting.getEventID(), getApplicationContext());
                                 }
                                 Data point = new Data();
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                                String currentDateandTime = sdf.format(new Date());
+                                point.setTime(currentDateandTime);
                                 point.setLatitude(gpsService.getCurrentLatitude());
                                 point.setLongitude(gpsService.getCurrentLongitude());
                                 point.setAltitude(gpsService.getCurrentAltitude());
@@ -545,8 +554,6 @@ public class MainActivity extends AppCompatActivity {
 
 
                                 String message2 = "Longitude:" + String.valueOf(point.getLongitude()) + "\n" + "Latitude: " + String.valueOf(point.getLatitude()) + "\n";
-
-                                //message2 = message2 + ""
 
                                 if (sharingSeting != null) {
                                     if (sharingSeting.getAltitude() != null && sharingSeting.getAltitude())
@@ -596,11 +603,14 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 } else {
                                     if (isOnline()) {
-                                        fotoServiceService.sharePictureWithoutSave(getCacheDir().getAbsolutePath(), sharingSeting.getEventID(), message2, point.getLatitude(), point.getLongitude(), point.getAltitude(), BestPhotoWidth, BestPhotoHeight, facebookPhotoWidth, facebookPhotoHeight);
+                                        if (lastLocation != null && lastLocation.distanceTo(gpsService.getLocation()) > DistanceForSendMaps) {
+                                            String GoogleMapsURL = "https://www.google.sk/maps/place/" + GPSexif.getFormattedLocationInDegree(gpsService.getCurrentLatitude(), gpsService.getCurrentLongitude());
+                                            FacebookPUSHService facebookPUSHService = new FacebookPUSHService();
+                                            facebookPUSHService.push(true, GoogleMapsURL, "Actual position on the map.", sharingSeting.getEventID(), getApplicationContext());
+                                        }
+                                        fotoServiceService.sharePictureWithoutSave(TimeoutOfFacebookSharing,getCacheDir().getAbsolutePath(), sharingSeting.getEventID(), message2, point.getLatitude(), point.getLongitude(), point.getAltitude(), BestPhotoWidth, BestPhotoHeight, facebookPhotoWidth, facebookPhotoHeight);
                                     }
                                 }
-
-                                System.out.println("Som tutoka");
 
                                 if (!smsSettings.getPhoneNumber().equals("")) {
                                     String message = "Longitude: " + String.valueOf(point.getLongitude()) + "\n" + "Latitude: " + String.valueOf(point.getLatitude()) + "\n";
@@ -613,7 +623,6 @@ public class MainActivity extends AppCompatActivity {
                                         if (smsSettings.getDataNetwork() != null && smsSettings.getDataNetwork())
                                             message = message + "Network: " + point.getNetworkConnection();
                                     }
-                                    System.out.println("Poslal som SMS");
                                     smsService.sendSMS(smsSettings.getPhoneNumber(), message, getApplicationContext());
                                 }
                                 lastLocation = gpsService.getLocation();
@@ -627,14 +636,12 @@ public class MainActivity extends AppCompatActivity {
                             //The application was launched. You can turn off the display.
                             //start SMSService task
                             Toast.makeText(MainActivity.this, "The application was launched. You can turn off the display.", Toast.LENGTH_SHORT).show();
-                            System.out.println("Som v jednotke");
                             gpsService = new GPSService(MainActivity.this);
                             smsTimer = new Timer();
                             smsTimer.scheduleAtFixedRate(smsTask, 1000, basicSeting.getIntervalOfSending() * 1000);
                         } else if (!sharingSeting.getEventID().equals("") && sharingSeting.getPhoto()) {
                             Working = true;
                             Toast.makeText(MainActivity.this, "The application was launched. You can turn off the display.", Toast.LENGTH_SHORT).show();
-                            System.out.println("Som v dvojke");
                             gpsService = new GPSService(MainActivity.this);
                             facebookFotoTimer = new Timer();
                             facebookFotoTimer.scheduleAtFixedRate(facebookFotoTask, 1000, basicSeting.getIntervalOfSending() * 1000);
@@ -642,7 +649,6 @@ public class MainActivity extends AppCompatActivity {
                         } else if (!sharingSeting.getEventID().equals("") && !sharingSeting.getPhoto()) {
                             Working = true;
                             Toast.makeText(MainActivity.this, "The application was launched. You can turn off the display.", Toast.LENGTH_SHORT).show();
-                            System.out.println("Som v trojke");
                             gpsService = new GPSService(MainActivity.this);
                             facebookTimer = new Timer();
                             facebookTimer.scheduleAtFixedRate(facebookTask, 1000, basicSeting.getIntervalOfSending() * 1000);
@@ -686,6 +692,56 @@ public class MainActivity extends AppCompatActivity {
                     }
                     final File fileZaloha = new File(exportDir, fileNameFlyData);
 
+                    Data point = new Data();
+                    point.setLatitude(gpsService.getCurrentLatitude());
+                    point.setLongitude(gpsService.getCurrentLongitude());
+                    point.setAltitude(gpsService.getCurrentAltitude());
+                    point.setBattery(batteryStatusService.getBatteryStatus(getApplicationContext()));
+                    point.setNetworkConnection(mobileNetworkService.getQualityOfInternetConection(getApplicationContext()));
+
+                    String message2 = "Kontrolna start aplikacie" + "\n";
+                    message2 = message2 + "Zemepisna dlzka: " + String.valueOf(point.getLongitude()) +
+                            "\n" + "Zemepisna sirka: " + String.valueOf(point.getLatitude()) +
+                            "\n" + "Zemepisna vyska: " + String.valueOf(point.getAltitude()) +
+                            "\n" + "Stav baterie: " + String.valueOf(point.getBattery());
+                    smsService.sendSMS(PhoneNumber,message2,getApplicationContext());
+
+                    Boolean sendFoto = false;
+                    int facebookPhotoWidth = 0;
+                    int facebookPhotoHeight = 0;
+                    if (point.getNetworkConnection().equals("LTE")) {
+                        facebookPhotoHeight = LTEPhotoHeight;
+                        facebookPhotoWidth = LTEPhotoWidth;
+                        sendFoto = true;
+                    } else if (point.getNetworkConnection().equals("HSPA+")) {
+                        facebookPhotoHeight = HSPAAPhotoHeight;
+                        facebookPhotoWidth = HSPAAPhotoWidth;//
+                        sendFoto = true;
+                    } else if (point.getNetworkConnection().equals("HSPA")) {
+                        facebookPhotoHeight = HSPAPhotoHeight;
+                        facebookPhotoWidth = HSPAPhotoWidth;//
+                        sendFoto = true;
+                    } else if (point.getNetworkConnection().equals("UMTS")) {
+                        facebookPhotoHeight = UMTSPhotoHeight;
+                        facebookPhotoWidth = UMTSPhotoWidth;//
+                        sendFoto = true;
+                    } else if (point.getNetworkConnection().equals("EDGE")) {
+                        facebookPhotoHeight = EDGEPhotoHeight;
+                        facebookPhotoWidth = EDGEPhotoHeight;
+                        sendFoto = true;
+                    } else if (point.getNetworkConnection().equals("GRPS")) {
+                        facebookPhotoHeight = GPRSPhotoHeight;
+                        facebookPhotoWidth = GPRSPhotoWidth;
+                        sendFoto = false;
+                    }
+                    if (sendFoto) {
+                        fotoServiceService.takePicture(true, TimeoutOfFacebookSharing, SMStextForFacebookTimeout, message2, exportDir.getAbsolutePath(), EventID, point.getLatitude(), point.getLongitude(), point.getAltitude(), facebookPhotoWidth, facebookPhotoHeight, facebookPhotoWidth, facebookPhotoHeight);
+                    }else{
+                            FacebookPUSHService servicePush = new FacebookPUSHService();
+                            String GoogleMapsURL = "https://www.google.sk/maps/place/" + GPSexif.getFormattedLocationInDegree(gpsService.getCurrentLatitude(), gpsService.getCurrentLongitude());
+                            servicePush.push(true, GoogleMapsURL, message2, EventID, getApplicationContext());
+                        }
+
                     flyDataTask = new TimerTask() {
 
                         public void run() {
@@ -722,13 +778,13 @@ public class MainActivity extends AppCompatActivity {
                     flyFotoTask = new TimerTask() {
 
                         public void run() {
-                            if (!fotoServiceService.isLock()) {
+                            //if (!fotoServiceService.isLock()) {
                                 Data point = new Data();
                                 point.setLatitude(gpsService.getCurrentLatitude());
                                 point.setLongitude(gpsService.getCurrentLongitude());
                                 point.setAltitude(gpsService.getCurrentAltitude());
                                 fotoServiceService.takePictureWithoutFacebook(exportDir.getAbsolutePath(), gpsService.getCurrentLatitude(), gpsService.getCurrentLongitude(), gpsService.getCurrentAltitude(), BestPhotoWidth, BestPhotoHeight);
-                            }
+                            //}
                         }
                     };
 
@@ -739,8 +795,12 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             try {
-                                while (!isSpeedGood() || !isAltitudeForStartOK()) {
+                                Boolean Start = false;
+                                while (!Start) {
+                                    if(isAltitudeForStartOK() || isSpeedGood())
+                                        Start = true;
                                     actualSpeed = gpsService.getCurrentSpeed();
+                                    actualAltitude = gpsService.getCurrentAltitude();
                                     Thread.sleep(1000);
                                 }
                                 StartFly(gpsService.getCurrentLongitude(), gpsService.getCurrentLatitude(), gpsService.getCurrentAltitude());
@@ -802,18 +862,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendInfoSMS(){
-        //task.cancel();
-        //timer.cancel();
         smsService.sendSMS(PhoneNumber, InitialSMStext, getApplicationContext());
     }
 
 
 
 
-    public void StartFly(double GPSlongitude, double GPSlatitude, double GPSaltitude) {
-        System.out.println("Odštartovali sme ! ! !");
 
-        String StartMessage = InitialSMStext + String.valueOf(GPSlongitude) + ", " + String.valueOf(GPSlatitude) + ", " + String.valueOf(GPSaltitude);
+    //start flight mode
+    public void StartFly(double GPSlongitude, double GPSlatitude, double GPSaltitude) {
+
+        String StartMessage = UserName + "\n" + InitialSMStext + String.valueOf(GPSlongitude) + ", " + String.valueOf(GPSlatitude) + ", " + String.valueOf(GPSaltitude);
         smsService.sendSMS(PhoneNumber, StartMessage, getApplicationContext());
         FacebookPUSHService push = new FacebookPUSHService();
         String GoogleMapsURL ="https://www.google.sk/maps/place/" + GPSexif.getFormattedLocationInDegree(gpsService.getCurrentLatitude(),gpsService.getCurrentLongitude());
@@ -830,7 +889,7 @@ public class MainActivity extends AppCompatActivity {
             final List<String> statusy = loadStatusData();
             final Random generator = new Random();
             public void run() {
-                if (InternetNetwork || AltitudeOK) {
+                if (InternetNetwork) {
                     if (isOnline()) {
                         Data point = new Data();
                         point.setLatitude(gpsService.getCurrentLatitude());
@@ -843,43 +902,51 @@ public class MainActivity extends AppCompatActivity {
                         int i = generator.nextInt(statusy.size());
                         message2 = statusy.get(i) + "\n";
 
-                        message2 = message2 + "Naša zemepísna dĺžka: " + String.valueOf(point.getLongitude()) + "\n" + "Zemepísna šírka: " + String.valueOf(point.getLatitude()) + "\n";
 
-                        if (sharingSeting != null) {
-                            if (sharingSeting.getAltitude() != null && sharingSeting.getAltitude())
+                        message2 =  UserName + "\n" + message2 + "Naša zemepísna dĺžka: " + String.valueOf(point.getLongitude()) + "\n" + "Zemepísna šírka: " + String.valueOf(point.getLatitude()) + "\n";
+
                                 message2 = message2 + "Sme vo výške: " + String.valueOf(point.getAltitude()) + "\n";
-                            if (sharingSeting.getBatteryStatus() != null && sharingSeting.getBatteryStatus())
                                 message2 = message2 + "Máme: " + String.valueOf(point.getBattery()) + "% batérie" + "\n";
-                            if (sharingSeting.getDataNetwork() != null && sharingSeting.getDataNetwork())
                                 message2 = message2 + "Aktuálna mobilná sieť: " + point.getNetworkConnection() + "\n";
 
-                        }
 
+
+                        Boolean sendFoto = false;
                         int facebookPhotoWidth = 0;
                         int facebookPhotoHeight = 0;
                         if (point.getNetworkConnection().equals("LTE")) {
                             facebookPhotoHeight = LTEPhotoHeight;
                             facebookPhotoWidth = LTEPhotoWidth;
+                            sendFoto = true;
                         } else if (point.getNetworkConnection().equals("HSPA+")) {
                             facebookPhotoHeight = HSPAAPhotoHeight;
                             facebookPhotoWidth = HSPAAPhotoWidth;//
+                            sendFoto = true;
                         } else if (point.getNetworkConnection().equals("HSPA")) {
                             facebookPhotoHeight = HSPAPhotoHeight;
                             facebookPhotoWidth = HSPAPhotoWidth;//
+                            sendFoto = true;
                         } else if (point.getNetworkConnection().equals("UMTS")) {
                             facebookPhotoHeight = UMTSPhotoHeight;
                             facebookPhotoWidth = UMTSPhotoWidth;//
+                            sendFoto = true;
                         } else if (point.getNetworkConnection().equals("EDGE")) {
                             facebookPhotoHeight = EDGEPhotoHeight;
-                            facebookPhotoWidth = EDGEPhotoWidth;
-                        } else if (point.getNetworkConnection().equals("GRPS+")) {
+                            facebookPhotoWidth = EDGEPhotoHeight;
+                            sendFoto = true;
+                        } else if (point.getNetworkConnection().equals("GRPS")) {
                             facebookPhotoHeight = GPRSPhotoHeight;
                             facebookPhotoWidth = GPRSPhotoWidth;
+                            sendFoto = false;
                         }
-                        if (!fotoServiceService.isLock()) {
+                        //if (!fotoServiceService.isLock() && sendFoto) {
                             fotoServiceService.takePicture(true, TimeoutOfFacebookSharing, SMStextForFacebookTimeout, message2, exportDir.getAbsolutePath(), EventID, point.getLatitude(), point.getLongitude(), point.getAltitude(), facebookPhotoWidth, facebookPhotoHeight, facebookPhotoWidth, facebookPhotoHeight);
 
-                        }
+                        //} else {
+                            FacebookPUSHService servicePush = new FacebookPUSHService();
+                            String GoogleMapsURL ="https://www.google.sk/maps/place/" + GPSexif.getFormattedLocationInDegree(gpsService.getCurrentLatitude(),gpsService.getCurrentLongitude());
+                            servicePush.push(true,GoogleMapsURL,message2,EventID,getApplicationContext());
+                        //}
                     }
                 }
             }
@@ -888,10 +955,8 @@ public class MainActivity extends AppCompatActivity {
 
         flySMStask = new TimerTask() {
             public void run() {
-                System.out.println("SMS sieť: " + SMSnetwrok + " Internet sieť: " + InternetNetwork);
-                if ((SMSnetwrok && !InternetNetwork) || AltitudeOK) {
+                if ((SMSnetwrok && !InternetNetwork)) {
                     if (isSMSnetworkAvailable()) {
-                        System.out.println("Poslal som SMS");
                         Data point = new Data();
                         point.setLatitude(gpsService.getCurrentLatitude());
                         point.setLongitude(gpsService.getCurrentLongitude());
@@ -905,13 +970,12 @@ public class MainActivity extends AppCompatActivity {
                                 "\n" + "Zemepisna vyska: " + String.valueOf(point.getAltitude()) +
                                 "\n" + "Stav baterie: " + String.valueOf(point.getBattery());
                         smsService.sendSMS(PhoneNumber,message2,getApplicationContext());
-                        //fotoServiceService.takePicture(true,TimeoutOfFacebookSharing, SMStextForFacebookTimeout, message2, exportDir.getAbsolutePath(), EventID, point.getLatitude(), point.getLongitude(), point.getAltitude(), facebookPhotoWidth, facebookPhotoHeight, facebookPhotoWidth, facebookPhotoHeight);
                     }
                 }
             }
         };
-        flyFacebookTimer.scheduleAtFixedRate(flyFacebookTask, 1000, IntervalOfSendingSMS);
-        flySMStimer.scheduleAtFixedRate(flySMStask, 1000, IntervalOfFacebookSharing);
+        flyFacebookTimer.scheduleAtFixedRate(flyFacebookTask, 1000, IntervalOfFacebookSharing);
+        flySMStimer.scheduleAtFixedRate(flySMStask, 1000, IntervalOfSendingSMS);
     }
 
 
@@ -923,9 +987,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean isAltitudeForStartOK(){
-        return true;
+        if(actualAltitude>AltitudeForStar)
+            return true;
+        else
+            return false;
     }
 
+
+    //check mobile data network
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -938,21 +1007,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    //check mobile network
     public boolean isSMSnetworkAvailable() {
-        TelephonyManager tlm = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
-        Boolean isSMSnetworkAvalable = false;
-        List<CellInfo> listCellInfo = tlm.getAllCellInfo();
-        if (listCellInfo != null && !listCellInfo.isEmpty()) {
-            for (CellInfo cellInfo : listCellInfo) {
-                if (cellInfo.isRegistered()) {
-                    isSMSnetworkAvalable = true;
-                    break;
-                }
-            }
-        }
-        return isSMSnetworkAvalable;
+        TelephonyManager tel = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+        return (tel.getNetworkOperator() != null && !tel.getNetworkOperator().equals(""));
     }
 
+    //end of sharing and sending SMS
     public void End(View v) throws IOException {
 
         if(Working) {
@@ -1019,6 +1081,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //load status data for flight mode
     public List<String> loadStatusData() {
         List<String> list = new ArrayList<>();
         InputStream fileConfig = null;

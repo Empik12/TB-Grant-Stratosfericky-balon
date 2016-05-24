@@ -32,8 +32,7 @@
             android:layout_height="wrap_content"
             android:inputType="phone"
             android:ems="10"
-            android:id="@+id/editTextPhone"
-            android:text="0919277176" />
+            android:id="@+id/editTextPhone" />
 
         <TextView
         android:layout_width="wrap_content"

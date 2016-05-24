@@ -41,8 +41,7 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:ems="10"
-            android:id="@+id/editTextEventId"
-            android:text="1611650125823319" />
+            android:id="@+id/editTextEventId" />
 
         <TextView
             android:layout_width="wrap_content"

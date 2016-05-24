@@ -9,10 +9,14 @@ import android.os.IBinder;
 
 /**
  * Created by Tomáš Baránek
- * This is Service for vorking with Battery status
+ * This is Service for working with Battery status
  *
  */
     public class BatteryStatusService extends Service {
+
+        public void BatteryStatusService(){
+
+        }
 
         @Override
         public IBinder onBind(Intent intent) {
@@ -24,7 +28,6 @@ import android.os.IBinder;
             IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
             Intent batteryStatus = context.registerReceiver(null, ifilter);
 
-            // Are we charging / charged?
             double status = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
             String bateria = String.valueOf(status);
 

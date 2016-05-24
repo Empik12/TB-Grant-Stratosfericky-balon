@@ -28,6 +28,11 @@ import java.util.Arrays;
 import fiit.baranek.tomas.gpssky.R;
 import fiit.baranek.tomas.gpssky.Settings.SharingSettings;
 
+/**
+ * Created by Tomáš Baránek
+ * Activity for sharing settings
+ * In this Activity user set sharing information for start
+ */
 public class SharingSettingsActivity extends AppCompatActivity {
 
     private LoginButton loginButton;
@@ -52,6 +57,7 @@ public class SharingSettingsActivity extends AppCompatActivity {
         CheckBoxDataNetwork = (CheckBox) findViewById(R.id.checkBoxDataNetwork);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayoutSharing);
         loginButton = (LoginButton) findViewById(R.id.login_button);
+        //action on Facebook thar aplication need
         loginButton.setPublishPermissions(Arrays.asList("publish_actions, publish_pages, manage_pages,user_about_me,user_posts"));
 
 
@@ -100,9 +106,7 @@ public class SharingSettingsActivity extends AppCompatActivity {
 
             @Override
             public void onCancel() {
-                //Log.d("Cenceled");
-                System.out.println("Zrusene");
-                System.out.println("Tu som 4");
+                //we return back
             }
 
             @Override
@@ -225,11 +229,14 @@ public class SharingSettingsActivity extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    //control user login
     public boolean isLoggedIn() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return accessToken != null;
     }
 
+
+    //control internet connection
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

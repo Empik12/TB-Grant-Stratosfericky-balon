@@ -10,6 +10,12 @@ import android.telephony.CellInfoGsm;
 import android.telephony.CellSignalStrengthGsm;
 import android.telephony.TelephonyManager;
 
+
+/**
+ * Created by Tomáš Baránek
+ * This is Service for get mobile network type
+ *
+ */
 public class MobileNetworkService extends Service {
     public MobileNetworkService() {
     }

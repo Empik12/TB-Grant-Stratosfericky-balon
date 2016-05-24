@@ -36,8 +36,7 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:ems="10"
-            android:id="@+id/editTextIntervalOfSending"
-            android:text="120" />
+            android:id="@+id/editTextIntervalOfSending" />
 
         <TextView
             android:layout_width="wrap_content"

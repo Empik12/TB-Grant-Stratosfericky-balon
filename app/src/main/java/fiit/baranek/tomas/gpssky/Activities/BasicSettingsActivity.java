@@ -23,6 +23,12 @@ import java.io.IOException;
 import fiit.baranek.tomas.gpssky.R;
 import fiit.baranek.tomas.gpssky.Settings.BasicSettings;
 
+
+/**
+ * Created by Tomáš Baránek
+ * Activity for basic settings
+ * In this Activity user set basic information for start
+ */
 public class BasicSettingsActivity extends AppCompatActivity {
 
     private BasicSettings setting = new BasicSettings();
@@ -55,7 +61,6 @@ public class BasicSettingsActivity extends AppCompatActivity {
                     EditTextSave.setEnabled(false);
                 }
                 RadioButton rb = (RadioButton) group.findViewById(checkedId);
-                System.out.println("Button id: " + String.valueOf(checkedId));
 
             }
         });
@@ -91,6 +96,7 @@ public class BasicSettingsActivity extends AppCompatActivity {
         setting.setFileName(EditTextSave.getText().toString());
         setting.setIntervalOfSending(Integer.parseInt(EditTextInftervalOfSending.getText().toString()));
 
+        //interval off sending must be grater
         if(setting.getIntervalOfSending() >= 120 ) {
             if(setting.getSave() && setting.getFileName().equals("")){
                 Snackbar snackbar = Snackbar

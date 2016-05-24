@@ -1,7 +1,9 @@
 package fiit.baranek.tomas.gpssky.Settings;
 
 /**
- * Created by TomasPC on 26.3.2016.
+ * Created by Tomáš Baránek
+ * This is model for SMSSetting
+ *
  */
 public class SMSSettings {
 

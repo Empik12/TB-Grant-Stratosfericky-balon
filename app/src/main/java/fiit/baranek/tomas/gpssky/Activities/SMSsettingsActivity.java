@@ -15,6 +15,12 @@ import android.widget.TextView;
 import fiit.baranek.tomas.gpssky.R;
 import fiit.baranek.tomas.gpssky.Settings.SMSSettings;
 
+/**
+ * Created by Tomáš Baránek
+ * Activity for SMS settings
+ * In this Activity user set SMS information for text message
+ */
+
 public class SMSsettingsActivity extends AppCompatActivity {
 
     private EditText EditTextPhoneNumer;
@@ -111,7 +117,6 @@ public class SMSsettingsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home: {
-                System.out.println("Vraciam sa");
                 finish();
             }
                 return true;

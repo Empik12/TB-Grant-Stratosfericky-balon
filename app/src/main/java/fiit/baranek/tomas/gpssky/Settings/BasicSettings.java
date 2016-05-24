@@ -3,7 +3,9 @@ package fiit.baranek.tomas.gpssky.Settings;
 import java.io.Serializable;
 
 /**
- * Created by TomasPC on 26.3.2016.
+ * Created by Tomáš Baránek
+ * This is model for BasicSetting
+ *
  */
 public class BasicSettings implements Serializable {
 

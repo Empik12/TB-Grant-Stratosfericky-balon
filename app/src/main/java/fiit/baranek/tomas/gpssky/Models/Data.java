@@ -1,7 +1,7 @@
 package fiit.baranek.tomas.gpssky.Models;
 
 /**
- * Created by TomasPC on 30.3.2016.
+ * This is model for save data about point
  */
 public class Data {
 

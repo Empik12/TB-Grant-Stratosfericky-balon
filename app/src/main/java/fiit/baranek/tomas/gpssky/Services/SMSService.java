@@ -7,6 +7,12 @@ import android.os.IBinder;
 import android.telephony.SmsManager;
 import android.widget.Toast;
 
+
+/**
+ * Created by Tomáš Baránek
+ * This is Service for send SMS message
+ *
+ */
 public class SMSService extends Service {
     public SMSService() {
     }
@@ -18,8 +24,6 @@ public class SMSService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // Let it continue running until it is stopped.
-        Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
         return START_STICKY;
     }
 
@@ -31,9 +35,6 @@ public class SMSService extends Service {
 
     public void sendSMS(String phoneNo, String message, Context context){
         SmsManager smsManager = SmsManager.getDefault();
-        //smsManager.
-        //smsManager.se
         smsManager.sendTextMessage(phoneNo, null, message, null, null);
-       // Toast.makeText(context, "SMSService sent.", Toast.LENGTH_LONG).show();
     }
 }

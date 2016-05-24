@@ -13,6 +13,12 @@ import com.facebook.HttpMethod;
 
 import org.json.JSONObject;
 
+
+/**
+ * Created by Tomáš Baránek
+ * This is Service for sharing a text message
+ *
+ */
 public class FacebookPUSHService extends Service {
     public FacebookPUSHService() {
     }
@@ -40,28 +46,17 @@ public class FacebookPUSHService extends Service {
         parametre.putString("message", message);
         if(Mapshare)
             parametre.putString("link",GoogleMapsURL);
-        //parametre.putString("description", "topic share");
         final String[] result = new String[1];
-        //parametre.putByteArray("picture", fotecka);
 
 
         GraphRequest request = new GraphRequest(token, path, parametre, HttpMethod.POST, new GraphRequest.Callback() {
 
             @Override
             public void onCompleted(GraphResponse response) {
-                JSONObject obj = response.getJSONObject();
-                if (obj != null) {
-                    result[0] ="id : " + obj.optString("id");
-                    System.out.println("Všetko je OKAY");
-                } else {
-                   result[0] =  "errof : " + response.getError().getErrorMessage();
-                    System.out.println("Všetko nie je OKAY:" + response.getError().getErrorMessage());
-                }
             }
         });
 
 
         request.executeAsync();
-        //Toast.makeText(context,result[0], Toast.LENGTH_LONG).show();
     }
 }

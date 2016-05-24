@@ -19,9 +19,16 @@ import android.support.v7.app.AlertDialog;
 
 /**
  * Created by Tomáš Baránek
+ * This Service provide GPS info
+ *
  */
 public class GPSService extends Service implements LocationListener {
-    private final Context mContext;
+
+    public GPSService(){
+
+    }
+
+    private Context mContext;
 
 
     boolean isGPSEnabled = false;

@@ -1,7 +1,8 @@
 package fiit.baranek.tomas.gpssky.Models;
 
 /**
- * Created by TomasPC on 4.5.2016.
+ * This method has been modified by us
+ * Source: https://techspread.wordpress.com/2014/04/07/write-read-geotag-jpegs-exif-data-in-android-gps/
  */
 public class GPSexif {
 
@@ -55,7 +56,6 @@ public class GPSexif {
                     + "'" + longSeconds + "\"" + lonDegrees;
         } catch (Exception e) {
 
-            //https://www.google.sk/maps/place/49°10'54.1"N+18°40'32.4"E/@49.1817014,18.6734837
             return ""+ String.format("%8.5f", latitude) + "+"
                     + String.format("%8.5f", longitude) ;
         }
